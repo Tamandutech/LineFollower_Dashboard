@@ -5,6 +5,7 @@ module.exports = (api) => {
     plugins: [
       // Required for expo-router
       "expo-router/babel",
+      ["@babel/plugin-transform-private-methods", { loose: true }],
     ],
   };
 };
