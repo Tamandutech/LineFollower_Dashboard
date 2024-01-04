@@ -11,7 +11,7 @@
     "format": "biome format --write .",
     "check": "biome check --apply-unsafe .",
     "check:ci": "biome ci .",
-    "test:unit": "jest -o --watch --coverage=false",
+    "test:unit": "jest --watch --coverage=false",
     "test:unit:ci": "jest --ci",
     "test:badges": "npm run test:ci  && jest-coverage-badges --input coverage/coverage-summary.json --output __badges__",
     "prepare": "husky install"
