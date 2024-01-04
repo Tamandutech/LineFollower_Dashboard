@@ -12,6 +12,9 @@
       },
       "complexity": {
         "noBannedTypes": "off"
+      },
+      "suspicious": {
+        "noConsoleLog": "off"
       }
     },
     "ignore": ["node_modules/**/*", "dist/**/*", "web-build/**/*", ".expo/**/*"]
