@@ -1,4 +1,4 @@
-import Page from "@/components/views/page";
+import Page from "@/components/layout/page";
 import { render, screen } from "@testing-library/react-native";
 import { Text, View } from "react-native";
 
