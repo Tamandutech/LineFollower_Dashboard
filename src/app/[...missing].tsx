@@ -13,7 +13,7 @@ export default function NotFoundScreen() {
     <>
       <Stack.Screen options={{ title: "Oops!" }} />
       <Box>
-        <Text>This screen doesn't exist.</Text>
+        <Text>Essa página não existe.</Text>
         <Link href="/" asChild>
           <Button variant="link">
             <ButtonIcon as={ArrowLeftIcon} />
