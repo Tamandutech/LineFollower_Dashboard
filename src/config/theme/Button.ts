@@ -1019,6 +1019,7 @@ export const Button = createStyle({
     size: "md",
     variant: "solid",
     action: "primary",
+    rounded: "$full",
   },
 
   _web: {
