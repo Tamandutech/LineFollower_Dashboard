@@ -1,4 +1,4 @@
-import Page from "@/components/views/page";
+import Page from "@/components/layout/page";
 
 export default function IndexScreen() {
   return <Page />;
