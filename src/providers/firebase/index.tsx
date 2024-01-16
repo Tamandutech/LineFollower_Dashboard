@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import { Platform } from "react-native";
 import getApp from "./_app";
 import getAuthService from "./_auth";
 import { getCloudFirestoreService } from "./_firestore";
@@ -17,7 +18,7 @@ export default function FirebaseBackendProvider({
   const app = getApp();
   const backend: Firebase.Backend = {
     app,
-    auth: getAuthService(app),
+    auth: getAuthService(app, Platform.OS),
     db: getCloudFirestoreService(app),
   };
   return (
