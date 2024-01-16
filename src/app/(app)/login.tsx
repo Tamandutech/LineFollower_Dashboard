@@ -1,4 +1,5 @@
 import Page from "@/components/layout/page";
+import { useColorMode } from "@/contexts/color-mode";
 import { useErrorModal } from "@/hooks/use-error-modal";
 import { useAuth } from "@/providers/auth";
 import { fetchGithubAccessToken } from "@/providers/auth/utils";
@@ -17,12 +18,15 @@ import {
   useAuthRequest,
 } from "expo-auth-session";
 import { Github } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import type { ComponentProps } from "react";
+import React from "react";
+
+type GithubLoginButtonProps = ComponentProps<typeof Button>;
 
 export default function Login() {
   const { login } = useAuth();
-  const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState<Errors.IError | null>(null);
+  const [isLoading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<Errors.IError | null>(null);
   const errorDialog = useErrorModal(error, () => setError(null));
   const [, response, promptAsync] = useAuthRequest(
     {
@@ -56,7 +60,7 @@ export default function Login() {
     }
   }
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (!response) {
       return;
     }
@@ -75,24 +79,50 @@ export default function Login() {
       <VStack space="md">
         <Text>Faça login com sua conta do Github para usar a dashboard</Text>
         <Center h="$12">
-          <Button
-            action="primary"
-            sx={{
-              backgroundColor: "$black",
-              borderRadius: "$md",
-              borderWidth: 1,
-              borderColor: "$black",
-            }}
+          <GitHubLoginButton
             onPress={redirectToGithubSignIn}
             isDisabled={isLoading}
-          >
-            <ButtonIcon as={Github} color="$white" mr="$2" />
-            <ButtonText>Login</ButtonText>
-            Button
-          </Button>
+          />
         </Center>
       </VStack>
       {errorDialog}
     </Page>
+  );
+}
+
+function GitHubLoginButton({ onPress, isDisabled }: GithubLoginButtonProps) {
+  const [colorMode] = useColorMode();
+  return (
+    <Button
+      action="primary"
+      $dark-bg="$white"
+      $light-bg="$black"
+      sx={{
+        borderColor: "$black",
+        _light: {
+          ":hover": {
+            backgroundColor: "$black",
+            borderColor: "$black",
+          },
+        },
+        _dark: {
+          ":hover": {
+            backgroundColor: "$white",
+            borderColor: "$white",
+          },
+        },
+      }}
+      onPress={onPress}
+      isDisabled={isDisabled}
+    >
+      <ButtonIcon
+        as={Github}
+        mr="$2"
+        color={colorMode === "dark" ? "$black" : "$white"}
+      />
+      <ButtonText $dark-color="$black" $light-color="$white">
+        Login
+      </ButtonText>
+    </Button>
   );
 }
