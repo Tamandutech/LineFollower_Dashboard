@@ -1,5 +1,4 @@
-import { NetworkError } from "@/errors";
-import { createErrorForResponse } from "@/errors/utils";
+import { NetworkError, createErrorForResponse } from "./errors";
 
 export type ValidationResult = [boolean, null] | [null, Errors.IError];
 
