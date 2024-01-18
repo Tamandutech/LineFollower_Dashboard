@@ -4,7 +4,7 @@
     "editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.codeActionsOnSave": {
-      "source.organizeImports": "explicit"
+      "source.organizeImports.biome": "explicit"
     }
   },
   "java.compile.nullAnalysis.mode": "disabled"
