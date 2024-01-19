@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.4.1/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.5.2/schema.json",
   "organizeImports": {
     "enabled": true
   },
@@ -7,9 +7,6 @@
     "enabled": true,
     "rules": {
       "recommended": true,
-      "security": {
-        "noDangerouslySetInnerHtml": "off"
-      },
       "complexity": {
         "noBannedTypes": "off"
       },
@@ -17,15 +14,39 @@
         "noConsoleLog": "off"
       },
       "nursery": {
-        "noUnusedImports": "error"
+        "noUnusedImports": "error",
+        "useExportType": "error",
+        "useImportType": "error",
+        "useFilenamingConvention": "error"
       }
     },
     "ignore": ["node_modules/**/*", "dist/**/*", "web-build/**/*", ".expo/**/*"]
+  },
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "defaultBranch": "main",
+    "useIgnoreFile": true
   },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
     "indentWidth": 2,
     "ignore": ["node_modules/**/*", "dist/**/*", "web-build/**/*", ".expo/**/*"]
-  }
+  },
+  "overrides": [
+    {
+      "include": ["src/app/**/*missing*", "src/app/**/+html.tsx"],
+      "linter": {
+        "rules": {
+          "security": {
+            "noDangerouslySetInnerHtml": "off"
+          },
+          "nursery": {
+            "useFilenamingConvention": "off"
+          }
+        }
+      }
+    }
+  ]
 }
