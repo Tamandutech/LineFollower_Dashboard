@@ -1,17 +1,20 @@
 const { defaults: tsjPreset } = require("ts-jest/presets");
+const { compilerOptions } = require("./tsconfig.json");
+const { pathsToModuleNameMapper } = require("ts-jest");
 
 module.exports = {
-  ...tsjPreset,
   preset: "jest-expo",
+  ...tsjPreset,
+  roots: ["<rootDir>"],
   globals: {
     "ts-jest": {
       babelConfig: true,
     },
   },
-  moduleNameMapper: {
-    "^@/(.*)$": "<rootDir>/$1",
-    "^~/(.*)$": "<rootDir>/$1",
-  },
+  modulePaths: [compilerOptions.baseUrl],
+  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths, {
+    prefix: "<rootDir>",
+  }),
   testRegex: "(/__tests__/.*|\\.(test|spec))\\.(ts|tsx|js)$",
   transformIgnorePatterns: [
     "<rootDir>/node_modules/(react-clone-referenced-element|@react-native-community|react-navigation|@react-navigation/.*|@unimodules/.*|native-base|react-native-code-push)",
