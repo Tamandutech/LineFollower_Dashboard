@@ -21,7 +21,7 @@ module.exports = {
   ],
   testPathIgnorePatterns: ["<rootDir>/node_modules/", "\\.snap$"],
   testEnvironment: "jsdom",
-  setupFilesAfterEnv: ["@testing-library/jest-native/extend-expect"],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   collectCoverage: true,
   collectCoverageFrom: [
     "**/*.{js,jsx}",
