@@ -6,7 +6,7 @@ import {
   getReactNativePersistence,
   initializeAuth,
 } from "firebase/auth";
-import { PlatformOSType } from "react-native";
+import type { PlatformOSType } from "react-native";
 
 export default function getAuthService(
   app: Firebase.App,

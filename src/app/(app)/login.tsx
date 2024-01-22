@@ -13,7 +13,7 @@ import {
   VStack,
 } from "@gluestack-ui/themed";
 import {
-  AuthSessionResult,
+  type AuthSessionResult,
   makeRedirectUri,
   useAuthRequest,
 } from "expo-auth-session";

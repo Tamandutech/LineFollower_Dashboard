@@ -4,7 +4,7 @@ import {
   AvatarImage,
   Icon,
 } from "@gluestack-ui/themed";
-import { User } from "firebase/auth";
+import type { User } from "firebase/auth";
 import { User as UserIcon } from "lucide-react-native";
 
 type UserAvatarProps = {

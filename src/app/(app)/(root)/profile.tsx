@@ -27,7 +27,7 @@ import {
   VStack,
   useToken,
 } from "@gluestack-ui/themed";
-import { User } from "firebase/auth";
+import type { User } from "firebase/auth";
 import { ChevronDownIcon, LogOut, Palette } from "lucide-react-native";
 import { useState } from "react";
 

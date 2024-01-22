@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { type ColorSchemeName } from "react-native";
+import type { ColorSchemeName } from "react-native";
 
 export type ColorMode = Exclude<ColorSchemeName, null | undefined>;
 

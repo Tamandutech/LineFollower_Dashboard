@@ -17,7 +17,6 @@ import {
   VStack,
 } from "@gluestack-ui/themed";
 import { Heading, InfoIcon } from "lucide-react-native";
-import React from "react";
 
 type ErrorModalProps = {
   error: Errors.IError;
