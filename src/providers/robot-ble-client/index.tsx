@@ -20,6 +20,14 @@ export * from "./clients";
 export * from "./devices";
 export * from "./permissions";
 
+export enum BluetoothState {
+  IDLE = "idle",
+  REQUESTING_PERMISSIONS = "requesting-permissions",
+  REQUESTING_DEVICE = "requesting-device",
+  CONNECTING = "connecting",
+  CONNECTED = "connected",
+}
+
 export type UseRobotBleClientReturn = {
   /**
    * O cliente BLE para a plataforma atual.
@@ -27,9 +35,9 @@ export type UseRobotBleClientReturn = {
   client: RobotBleClient<unknown>;
 
   /**
-   * Indica se o cliente está conectado com o robô.
+   * Indica o estado atual da comunicação via Bluetooth.
    */
-  connected: boolean;
+  state: BluetoothState;
 
   /**
    * Conecta o cliente com o robô e atualiza o estado `connected`.
@@ -78,18 +86,24 @@ export function useRobotBleClient(): UseRobotBleClientReturn {
   const requestPermissionStrategy = useContext(
     RequestBluetoothPermissionsStrategyContext,
   ) as RequestBluetoothPermissionsStrategy;
-  const [connected, setConnected] = useState(false);
+  const [state, setState] = useState<BluetoothState>(BluetoothState.IDLE);
   const [requestPermissionsResult, setRequestPermissionsResult] =
     useState<RequestBluetoothPermissionsResult | null>(null);
 
   useEffect(() => {
     async function requestPermissions() {
-      const result = await requestPermissionStrategy.execute();
-      setRequestPermissionsResult(result);
+      setState(BluetoothState.REQUESTING_PERMISSIONS);
+      try {
+        setRequestPermissionsResult(await requestPermissionStrategy.execute());
+      } finally {
+        setState(BluetoothState.IDLE);
+      }
     }
 
-    requestPermissions();
-  }, [requestPermissionStrategy]);
+    if (requestPermissionsResult === null) {
+      requestPermissions();
+    }
+  }, [requestPermissionStrategy, requestPermissionsResult]);
 
   function checkPermissions() {
     if (
@@ -109,28 +123,38 @@ export function useRobotBleClient(): UseRobotBleClientReturn {
     namePrefix: string,
   ): Promise<unknown> {
     checkPermissions();
-    return await requestDeviceStrategy.execute(
-      Object.keys(config.services),
-      namePrefix,
-    );
+
+    setState(BluetoothState.REQUESTING_DEVICE);
+    try {
+      return await requestDeviceStrategy.execute(
+        Object.keys(config.services),
+        namePrefix,
+      );
+    } finally {
+      setState(BluetoothState.IDLE);
+    }
   }
 
   async function connect(
     device: unknown,
     config: Robot.BluetoothConnectionConfig,
   ) {
-    await client.connect(device, config);
-    setConnected(true);
+    setState(BluetoothState.CONNECTING);
+    try {
+      return await client.connect(device, config);
+    } finally {
+      setState(BluetoothState.CONNECTED);
+    }
   }
 
   async function disconnect() {
     await client.disconnect();
-    setConnected(false);
+    setState(BluetoothState.IDLE);
   }
 
   return {
     client,
-    connected,
+    state,
     connect,
     disconnect,
     requestDevice,
