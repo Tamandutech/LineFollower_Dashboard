@@ -25,7 +25,6 @@ type GithubLoginButtonProps = ComponentProps<typeof Button>;
 
 export default function Login() {
   const { login } = useAuth();
-  const [isLoading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<Errors.IError | null>(null);
   const errorDialog = useErrorModal(error, () => setError(null));
   const [, response, promptAsync] = useAuthRequest(
@@ -68,7 +67,6 @@ export default function Login() {
   }, [response]);
 
   async function redirectToGithubSignIn() {
-    setLoading(true);
     await promptAsync({
       windowName: "Line Follower Dashboard",
       createTask: false,
@@ -80,10 +78,7 @@ export default function Login() {
       <VStack space="md">
         <Text>Faça login com sua conta do Github para usar a dashboard</Text>
         <Center h="$12">
-          <GitHubLoginButton
-            onPress={redirectToGithubSignIn}
-            isDisabled={isLoading}
-          />
+          <GitHubLoginButton onPress={redirectToGithubSignIn} />
         </Center>
       </VStack>
       {errorDialog}
