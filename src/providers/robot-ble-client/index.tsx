@@ -1,3 +1,4 @@
+import { useRobotContext } from "@/contexts/robot";
 import {
   type PropsWithChildren,
   createContext,
@@ -87,6 +88,7 @@ export function useRobotBleClient(): UseRobotBleClientReturn {
     RequestBluetoothPermissionsStrategyContext,
   ) as RequestBluetoothPermissionsStrategy;
   const [state, setState] = useState<BluetoothState>(BluetoothState.IDLE);
+  const [, setRobot] = useRobotContext();
   const [requestPermissionsResult, setRequestPermissionsResult] =
     useState<RequestBluetoothPermissionsResult | null>(null);
 
@@ -138,18 +140,23 @@ export function useRobotBleClient(): UseRobotBleClientReturn {
   async function connect(
     device: unknown,
     config: Robot.BluetoothConnectionConfig,
-  ) {
+  ): Promise<void> {
     setState(BluetoothState.CONNECTING);
     try {
-      return await client.connect(device, config);
+      await client.connect(device, config);
+      setRobot(config);
     } finally {
       setState(BluetoothState.CONNECTED);
     }
   }
 
   async function disconnect() {
-    await client.disconnect();
-    setState(BluetoothState.IDLE);
+    try {
+      await client.disconnect();
+      setRobot(null);
+    } finally {
+      setState(BluetoothState.IDLE);
+    }
   }
 
   return {

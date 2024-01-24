@@ -1,18 +1,21 @@
-import {
-  BluetoothState,
-  PermissionsNotGranted,
-  RequestBluetoothPermissionsStrategyContext,
-  RequestRobotDeviceStrategyContext,
-  RobotBleClientContext,
-  type UseRobotBleClientReturn,
-  useRobotBleClient,
-} from "@/providers/robot-ble-client";
+import type { TRobotContext } from "@/contexts/robot";
+import type { UseRobotBleClientReturn } from "@/providers/robot-ble-client";
 import {
   type RenderHookResult,
   act,
   renderHook,
 } from "@testing-library/react-native";
+import { withRobotContext } from "__tests__/unit/contexts/robot.test";
 import type { PropsWithChildren } from "react";
+
+const {
+  BluetoothState,
+  PermissionsNotGranted,
+  RequestBluetoothPermissionsStrategyContext,
+  RequestRobotDeviceStrategyContext,
+  RobotBleClientContext,
+  useRobotBleClient,
+} = jest.requireActual("@/providers/robot-ble-client");
 
 describe("useRobotBleClient", () => {
   let mockedClient: RobotBleClient<unknown>;
@@ -24,6 +27,7 @@ describe("useRobotBleClient", () => {
     unknown
   >;
   let robotBleClientMockProvider: React.FC;
+  let robotContextMock: jest.Mocked<TRobotContext>;
 
   const configMock = {
     services: {
@@ -46,23 +50,23 @@ describe("useRobotBleClient", () => {
     mockedRequestPermissionStrategy = {
       execute: jest.fn(() => Promise.resolve({ granted: true })),
     } as unknown as RequestBluetoothPermissionsStrategy;
-    robotBleClientMockProvider = function RobotBleClientMockProvider({
-      children,
-    }: PropsWithChildren) {
-      return (
-        <RobotBleClientContext.Provider value={mockedClient}>
-          <RequestRobotDeviceStrategyContext.Provider
-            value={mockedRequestDeviceStrategy}
-          >
-            <RequestBluetoothPermissionsStrategyContext.Provider
-              value={mockedRequestPermissionStrategy}
+    [robotContextMock, robotBleClientMockProvider] = withRobotContext(
+      function RobotBleClientMockProvider({ children }: PropsWithChildren) {
+        return (
+          <RobotBleClientContext.Provider value={mockedClient}>
+            <RequestRobotDeviceStrategyContext.Provider
+              value={mockedRequestDeviceStrategy}
             >
-              {children}
-            </RequestBluetoothPermissionsStrategyContext.Provider>
-          </RequestRobotDeviceStrategyContext.Provider>
-        </RobotBleClientContext.Provider>
-      );
-    };
+              <RequestBluetoothPermissionsStrategyContext.Provider
+                value={mockedRequestPermissionStrategy}
+              >
+                {children}
+              </RequestBluetoothPermissionsStrategyContext.Provider>
+            </RequestRobotDeviceStrategyContext.Provider>
+          </RobotBleClientContext.Provider>
+        );
+      },
+    );
 
     useRobotBleClientResultWrapper = renderHook(useRobotBleClient, {
       wrapper: robotBleClientMockProvider,
@@ -119,31 +123,66 @@ describe("useRobotBleClient", () => {
       });
     });
 
-    it("should not throw an error if permissions are granted", async () => {
-      await expect(
-        useRobotBleClientResultWrapper.result.current.requestDevice(
-          configMock,
-          namePrefixMock,
-        ),
-      ).resolves.not.toThrow(PermissionsNotGranted);
+    describe("requestDevice", () => {
+      it("should not throw an error if permissions are granted", async () => {
+        await expect(
+          useRobotBleClientResultWrapper.result.current.requestDevice(
+            configMock,
+            namePrefixMock,
+          ),
+        ).resolves.not.toThrow(PermissionsNotGranted);
+      });
     });
 
-    it("should connect to the device", async () => {
-      useRobotBleClientResultWrapper.rerender({});
-      await act(
-        async () =>
-          await useRobotBleClientResultWrapper.result.current.connect(
-            mockedDevice,
-            configMock,
-          ),
-      );
-      expect(mockedClient.connect).toHaveBeenCalledWith(
-        mockedDevice,
-        configMock,
-      );
-      expect(useRobotBleClientResultWrapper.result.current.state).toBe(
-        BluetoothState.CONNECTED,
-      );
+    describe("connect", () => {
+      it("should connect to the device", async () => {
+        await act(
+          async () =>
+            await useRobotBleClientResultWrapper.result.current.connect(
+              mockedDevice,
+              configMock,
+            ),
+        );
+        expect(mockedClient.connect).toHaveBeenCalledWith(
+          mockedDevice,
+          configMock,
+        );
+        expect(useRobotBleClientResultWrapper.result.current.state).toBe(
+          BluetoothState.CONNECTED,
+        );
+      });
+
+      it("should set the robot", async () => {
+        await act(
+          async () =>
+            await useRobotBleClientResultWrapper.result.current.connect(
+              mockedDevice,
+              configMock,
+            ),
+        );
+        expect(robotContextMock[1]).toHaveBeenCalledWith(configMock);
+      });
+    });
+
+    describe("disconnect", () => {
+      it("should disconnect from the device", async () => {
+        await act(
+          async () =>
+            await useRobotBleClientResultWrapper.result.current.disconnect(),
+        );
+        expect(mockedClient.disconnect).toHaveBeenCalled();
+        expect(useRobotBleClientResultWrapper.result.current.state).toBe(
+          BluetoothState.IDLE,
+        );
+      });
+
+      it("should set the robot to null", async () => {
+        await act(
+          async () =>
+            await useRobotBleClientResultWrapper.result.current.disconnect(),
+        );
+        expect(robotContextMock[1]).toHaveBeenCalledWith(null);
+      });
     });
   });
 });
