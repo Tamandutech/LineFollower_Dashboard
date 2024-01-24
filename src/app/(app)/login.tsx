@@ -75,7 +75,7 @@ export default function Login() {
 
   return (
     <Page>
-      <VStack space="md">
+      <VStack space="md" mt="$7">
         <Text>Faça login com sua conta do Github para usar a dashboard</Text>
         <Center h="$12">
           <GitHubLoginButton onPress={redirectToGithubSignIn} />
