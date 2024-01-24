@@ -71,6 +71,7 @@ export default function Login() {
     setLoading(true);
     await promptAsync({
       windowName: "Line Follower Dashboard",
+      createTask: false,
     });
   }
 
