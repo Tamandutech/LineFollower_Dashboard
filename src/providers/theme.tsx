@@ -41,9 +41,9 @@ function NavigationThemeProvider({ children }: PropsWithChildren) {
     colors: {
       primary: useToken("colors", "primary"),
       background: useToken("colors", "backgroundDark950"),
-      card: useToken("colors", "backgroundDark800"),
+      card: useToken("colors", "backgroundDark900"),
       text: useToken("colors", "textLight50"),
-      border: useToken("colors", "borderDark800"),
+      border: useToken("colors", "borderDark900"),
       notification: useToken("colors", "error600"),
     },
   };
