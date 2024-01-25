@@ -5,6 +5,7 @@ import {
   Button,
   ButtonText,
   CloseIcon,
+  Heading,
   Icon,
   Modal,
   ModalBackdrop,
@@ -16,7 +17,7 @@ import {
   Text,
   VStack,
 } from "@gluestack-ui/themed";
-import { Heading, InfoIcon } from "lucide-react-native";
+import { InfoIcon } from "lucide-react-native";
 
 type ErrorModalProps = {
   error: Errors.IError;
@@ -42,7 +43,7 @@ export default function ErrorModal({
         <ModalBody>
           <VStack>
             <Text size="sm">{error.message}</Text>
-            <Alert mx="$2.5" action="muted" variant="solid">
+            <Alert action="error" variant="solid" mt="$2">
               <AlertIcon as={InfoIcon} mr="$3" />
               <AlertText>{error.action}</AlertText>
             </Alert>
