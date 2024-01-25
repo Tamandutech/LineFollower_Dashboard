@@ -1,3 +1,4 @@
+import { TextEncoder } from "fastestsmallesttextencoderdecoder";
 import mitt from "mitt";
 import type { BleManager, Characteristic, Device } from "react-native-ble-plx";
 import {

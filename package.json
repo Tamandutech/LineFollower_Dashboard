@@ -35,6 +35,7 @@
     "expo-status-bar": "~1.6.0",
     "expo-system-ui": "~2.4.0",
     "expo-web-browser": "~12.3.2",
+    "fastestsmallesttextencoderdecoder": "^1.0.22",
     "firebase": "^10.7.1",
     "lucide-react-native": "^0.303.0",
     "react": "18.2.0",

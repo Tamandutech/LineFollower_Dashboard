@@ -1,3 +1,4 @@
+import { TextDecoder } from "fastestsmallesttextencoderdecoder";
 import { type Observable, type UnaryFunction, filter, map, pipe } from "rxjs";
 
 /**

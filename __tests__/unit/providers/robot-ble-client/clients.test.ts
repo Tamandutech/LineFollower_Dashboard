@@ -3,6 +3,7 @@ import {
   BleWebClient,
 } from "@/providers/robot-ble-client/clients";
 import { randomUUID } from "expo-crypto";
+import { TextEncoder } from "fastestsmallesttextencoderdecoder";
 import type { BleManager, Characteristic, Device } from "react-native-ble-plx";
 
 const SERVICE_MOCK_UUID = "aa3e85f8-3190-4135-a9c9-ef57dffb6ab1";
