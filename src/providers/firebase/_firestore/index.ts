@@ -1,4 +1,6 @@
+import { FirebaseError } from "firebase/app";
 import {
+  getFirestore,
   initializeFirestore,
   persistentLocalCache,
   persistentMultipleTabManager,
@@ -7,9 +9,20 @@ import {
 export function getCloudFirestoreService(
   app: Firebase.App,
 ): Firebase.Services.Firestore {
-  return initializeFirestore(app, {
-    localCache: persistentLocalCache({
-      tabManager: persistentMultipleTabManager(),
-    }),
-  });
+  let firestore: Firebase.Services.Firestore;
+  try {
+    firestore = initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager(),
+      }),
+    });
+  } catch (error) {
+    if (error instanceof FirebaseError) {
+      firestore = getFirestore(app);
+    } else {
+      throw error;
+    }
+  }
+
+  return firestore;
 }
