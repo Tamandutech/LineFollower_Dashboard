@@ -7,5 +7,6 @@
       "source.fixAll": "explicit"
     }
   },
-  "java.compile.nullAnalysis.mode": "disabled"
+  "java.compile.nullAnalysis.mode": "disabled",
+  "java.autobuild.enabled": false
 }
