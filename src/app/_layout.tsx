@@ -1,5 +1,7 @@
+import { RobotContextProvider } from "@/contexts/robot";
 import AuthProvider from "@/providers/auth";
 import FirebaseBackendProvider from "@/providers/firebase";
+import BleClientProvider from "@/providers/robot-ble-client";
 import UIThemeProvider from "@/providers/theme";
 import {
   Lato_100Thin,
@@ -36,7 +38,11 @@ export default function RootLayout() {
     <UIThemeProvider>
       <FirebaseBackendProvider>
         <AuthProvider>
-          <Slot />
+          <RobotContextProvider>
+            <BleClientProvider>
+              <Slot />
+            </BleClientProvider>
+          </RobotContextProvider>
         </AuthProvider>
       </FirebaseBackendProvider>
     </UIThemeProvider>
