@@ -1,4 +1,4 @@
-import type { BleManager, Device } from "react-native-ble-plx";
+import { type BleManager, type Device, ScanMode } from "react-native-ble-plx";
 import { DeviceNotFoundError } from "./errors";
 
 abstract class RequestDeviceStrategy<TDevice, TBluetoothManager>
@@ -12,11 +12,11 @@ export class RequestDeviceNativeStrategy
   extends RequestDeviceStrategy<Device, BleManager>
   implements RequestRobotDeviceStrategy<Device>
 {
-  async execute(services: string[], namePrefix: string): Promise<Device> {
+  async execute(_: string[], namePrefix: string): Promise<Device> {
     return await new Promise((resolve, reject) => {
       this.manager.startDeviceScan(
-        services,
-        { allowDuplicates: false },
+        null,
+        { allowDuplicates: false, scanMode: ScanMode.LowLatency },
         (error, device) => {
           if (device?.name?.startsWith(namePrefix)) {
             this.manager.stopDeviceScan();
