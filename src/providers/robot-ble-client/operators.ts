@@ -1,5 +1,5 @@
-import { TextDecoder } from "fastestsmallesttextencoderdecoder";
 import { type Observable, type UnaryFunction, filter, map, pipe } from "rxjs";
+import { TextDecoder } from "text-encoding";
 
 /**
  * Converte um `Observable` que emite `DataView`s ou `string`s em um `Observable`

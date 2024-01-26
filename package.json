@@ -25,6 +25,7 @@
     "@gluestack-ui/themed": "^1.0.33",
     "@react-native-async-storage/async-storage": "1.18.2",
     "@react-navigation/native": "^6.0.2",
+    "@types/text-encoding": "^0.0.39",
     "@types/web-bluetooth": "^0.0.20",
     "babel-plugin-rewrite-require": "^1.14.5",
     "expo": "~49.0.15",
@@ -37,7 +38,6 @@
     "expo-status-bar": "~1.6.0",
     "expo-system-ui": "~2.4.0",
     "expo-web-browser": "~12.3.2",
-    "fastestsmallesttextencoderdecoder": "^1.0.22",
     "firebase": "^10.7.1",
     "lucide-react-native": "^0.303.0",
     "mitt": "^3.0.1",
@@ -54,6 +54,7 @@
     "rxjs": "^7.8.1",
     "stream-browserify": "^3.0.0",
     "swr": "^2.2.4",
+    "text-encoding": "^0.7.0",
     "util": "^0.12.5"
   },
   "devDependencies": {

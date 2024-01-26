@@ -1,4 +1,3 @@
-import { TextEncoder } from "fastestsmallesttextencoderdecoder";
 import mitt from "mitt";
 import type { BleManager, Characteristic, Device } from "react-native-ble-plx";
 import {
@@ -9,6 +8,7 @@ import {
   connectable,
   first,
 } from "rxjs";
+import { TextEncoder } from "text-encoding";
 import { CharacteristicWriteError, ConnectionError } from "./errors";
 import { dataToMessages } from "./operators";
 
