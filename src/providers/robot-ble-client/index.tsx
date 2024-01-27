@@ -80,7 +80,7 @@ export const RequestBluetoothPermissionsStrategyContext = createContext(
   {} as RequestBluetoothPermissionsStrategy,
 );
 
-export function useRobotBleClient(): UseRobotBleClientReturn {
+export function useRobotBleAdapter(): UseRobotBleClientReturn {
   const client = useContext(RobotBleClientContext);
   const requestDeviceStrategy = useContext(RequestRobotDeviceStrategyContext);
   const requestPermissionStrategy = useContext(
