@@ -8,23 +8,23 @@ function asTabBarIcon(Base: ComponentType<IconProps>) {
 }
 
 const pages = new Map<string, { title: string; icon: ReactNode }>([
-  ["[id]", { title: "Início", icon: asTabBarIcon(Home) }],
+  ["", { title: "Início", icon: asTabBarIcon(Home) }],
   [
-    "[id]/parameters",
+    "parameters",
     {
       title: "Parâmetros",
       icon: asTabBarIcon(Sliders),
     },
   ],
   [
-    "[id]/mapping",
+    "mapping",
     {
       title: "Mapeamento",
       icon: asTabBarIcon(Mapping),
     },
   ],
   [
-    "[id]/streams",
+    "streams",
     {
       title: "Transmissões",
       icon: asTabBarIcon(AreaChart),
