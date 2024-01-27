@@ -7,7 +7,6 @@ import {
   useState,
 } from "react";
 import { Platform } from "react-native";
-import type { Device } from "react-native-ble-plx";
 import { PermissionsNotGranted } from "./errors";
 import {
   createRequestBluetoothPermissionsStrategyForPlatform,
@@ -71,22 +70,22 @@ export type UseRobotBleClientReturn = {
   ) => Promise<unknown>;
 };
 
-export const RobotBleClientContext = createContext<
-  RobotBleClient<Device> | RobotBleClient<BluetoothDevice> | null
->(null);
-export const RequestRobotDeviceStrategyContext =
-  createContext<RequestRobotDeviceStrategy<unknown> | null>(null);
-export const RequestBluetoothPermissionsStrategyContext =
-  createContext<RequestBluetoothPermissionsStrategy | null>(null);
+export const RobotBleClientContext = createContext(
+  {} as RobotBleClient<unknown>,
+);
+export const RequestRobotDeviceStrategyContext = createContext(
+  {} as RequestRobotDeviceStrategy<unknown>,
+);
+export const RequestBluetoothPermissionsStrategyContext = createContext(
+  {} as RequestBluetoothPermissionsStrategy,
+);
 
 export function useRobotBleClient(): UseRobotBleClientReturn {
-  const client = useContext(RobotBleClientContext) as RobotBleClient<unknown>;
-  const requestDeviceStrategy = useContext(
-    RequestRobotDeviceStrategyContext,
-  ) as RequestRobotDeviceStrategy<unknown>;
+  const client = useContext(RobotBleClientContext);
+  const requestDeviceStrategy = useContext(RequestRobotDeviceStrategyContext);
   const requestPermissionStrategy = useContext(
     RequestBluetoothPermissionsStrategyContext,
-  ) as RequestBluetoothPermissionsStrategy;
+  );
   const [state, setState] = useState<BluetoothState>(BluetoothState.IDLE);
   const [, setRobot] = useRobotContext();
   const [requestPermissionsResult, setRequestPermissionsResult] =
@@ -177,7 +176,11 @@ export default function BleClientProvider({ children }: PropsWithChildren) {
         value={createRequestRobotDeviceStrategyForPlatform(Platform.OS)}
       >
         <RobotBleClientContext.Provider
-          value={createRobotBleClientForPlatform(Platform.OS)}
+          value={
+            createRobotBleClientForPlatform(
+              Platform.OS,
+            ) as RobotBleClient<unknown>
+          }
         >
           {children}
         </RobotBleClientContext.Provider>
