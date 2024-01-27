@@ -1,20 +1,23 @@
 import type { TRobotContext } from "@/contexts/robot";
-import type { UseRobotBleClientReturn } from "@/providers/robot-ble-client";
+import {
+  BluetoothState,
+  type UseRobotBleClientReturn,
+} from "@/providers/robot-ble-client";
 import {
   type RenderHookResult,
   act,
   renderHook,
 } from "@testing-library/react-native";
 import { withRobotContext } from "__tests__/unit/contexts/robot.test";
-import type { PropsWithChildren } from "react";
+import { type PropsWithChildren, useState } from "react";
 
 const {
-  BluetoothState,
+  BluetoothStateContext,
   PermissionsNotGranted,
   RequestBluetoothPermissionsStrategyContext,
   RequestRobotDeviceStrategyContext,
   RobotBleClientContext,
-  useRobotBleClient,
+  useRobotBleAdapter,
 } = jest.requireActual("@/providers/robot-ble-client");
 
 describe("useRobotBleClient", () => {
@@ -53,22 +56,24 @@ describe("useRobotBleClient", () => {
     [robotContextMock, robotBleClientMockProvider] = withRobotContext(
       function RobotBleClientMockProvider({ children }: PropsWithChildren) {
         return (
-          <RobotBleClientContext.Provider value={mockedClient}>
-            <RequestRobotDeviceStrategyContext.Provider
-              value={mockedRequestDeviceStrategy}
-            >
-              <RequestBluetoothPermissionsStrategyContext.Provider
-                value={mockedRequestPermissionStrategy}
+          <BluetoothStateContext.Provider value={useState(BluetoothState.IDLE)}>
+            <RobotBleClientContext.Provider value={mockedClient}>
+              <RequestRobotDeviceStrategyContext.Provider
+                value={mockedRequestDeviceStrategy}
               >
-                {children}
-              </RequestBluetoothPermissionsStrategyContext.Provider>
-            </RequestRobotDeviceStrategyContext.Provider>
-          </RobotBleClientContext.Provider>
+                <RequestBluetoothPermissionsStrategyContext.Provider
+                  value={mockedRequestPermissionStrategy}
+                >
+                  {children}
+                </RequestBluetoothPermissionsStrategyContext.Provider>
+              </RequestRobotDeviceStrategyContext.Provider>
+            </RobotBleClientContext.Provider>
+          </BluetoothStateContext.Provider>
         );
       },
     );
 
-    useRobotBleClientResultWrapper = renderHook(useRobotBleClient, {
+    useRobotBleClientResultWrapper = renderHook(useRobotBleAdapter, {
       wrapper: robotBleClientMockProvider,
     });
   });
@@ -98,7 +103,7 @@ describe("useRobotBleClient", () => {
       mockedRequestPermissionStrategy.execute = jest
         .fn()
         .mockResolvedValue({ granted: false, action: "Test" });
-      useRobotBleClientResultWrapper = renderHook(useRobotBleClient, {
+      useRobotBleClientResultWrapper = renderHook(useRobotBleAdapter, {
         wrapper: robotBleClientMockProvider,
       });
     });
@@ -118,7 +123,7 @@ describe("useRobotBleClient", () => {
       mockedRequestPermissionStrategy.execute = jest
         .fn()
         .mockResolvedValue({ granted: true });
-      useRobotBleClientResultWrapper = renderHook(useRobotBleClient, {
+      useRobotBleClientResultWrapper = renderHook(useRobotBleAdapter, {
         wrapper: robotBleClientMockProvider,
       });
     });

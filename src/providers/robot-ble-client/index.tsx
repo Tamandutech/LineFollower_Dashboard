@@ -1,6 +1,8 @@
 import { useRobotContext } from "@/contexts/robot";
 import {
+  type Dispatch,
   type PropsWithChildren,
+  type SetStateAction,
   createContext,
   useContext,
   useEffect,
@@ -27,6 +29,11 @@ export enum BluetoothState {
   CONNECTING = "connecting",
   CONNECTED = "connected",
 }
+
+export type BluetoothStateContextValue = readonly [
+  BluetoothState,
+  Dispatch<SetStateAction<BluetoothState>>,
+];
 
 export type UseRobotBleClientReturn = {
   /**
@@ -79,6 +86,9 @@ export const RequestRobotDeviceStrategyContext = createContext(
 export const RequestBluetoothPermissionsStrategyContext = createContext(
   {} as RequestBluetoothPermissionsStrategy,
 );
+export const BluetoothStateContext = createContext(
+  [] as unknown as BluetoothStateContextValue,
+);
 
 export function useRobotBleAdapter(): UseRobotBleClientReturn {
   const client = useContext(RobotBleClientContext);
@@ -86,7 +96,7 @@ export function useRobotBleAdapter(): UseRobotBleClientReturn {
   const requestPermissionStrategy = useContext(
     RequestBluetoothPermissionsStrategyContext,
   );
-  const [state, setState] = useState<BluetoothState>(BluetoothState.IDLE);
+  const [state, setState] = useContext(BluetoothStateContext);
   const [, setRobot] = useRobotContext();
   const [requestPermissionsResult, setRequestPermissionsResult] =
     useState<RequestBluetoothPermissionsResult | null>(null);
@@ -104,7 +114,7 @@ export function useRobotBleAdapter(): UseRobotBleClientReturn {
     if (requestPermissionsResult === null) {
       requestPermissions();
     }
-  }, [requestPermissionStrategy, requestPermissionsResult]);
+  }, [requestPermissionStrategy, requestPermissionsResult, setState]);
 
   function checkPermissions() {
     if (
@@ -169,22 +179,28 @@ export function useRobotBleAdapter(): UseRobotBleClientReturn {
 
 export default function BleClientProvider({ children }: PropsWithChildren) {
   return (
-    <RequestBluetoothPermissionsStrategyContext.Provider
-      value={createRequestBluetoothPermissionsStrategyForPlatform(Platform.OS)}
+    <BluetoothStateContext.Provider
+      value={useState<BluetoothState>(BluetoothState.IDLE)}
     >
-      <RequestRobotDeviceStrategyContext.Provider
-        value={createRequestRobotDeviceStrategyForPlatform(Platform.OS)}
+      <RequestBluetoothPermissionsStrategyContext.Provider
+        value={createRequestBluetoothPermissionsStrategyForPlatform(
+          Platform.OS,
+        )}
       >
-        <RobotBleClientContext.Provider
-          value={
-            createRobotBleClientForPlatform(
-              Platform.OS,
-            ) as RobotBleClient<unknown>
-          }
+        <RequestRobotDeviceStrategyContext.Provider
+          value={createRequestRobotDeviceStrategyForPlatform(Platform.OS)}
         >
-          {children}
-        </RobotBleClientContext.Provider>
-      </RequestRobotDeviceStrategyContext.Provider>
-    </RequestBluetoothPermissionsStrategyContext.Provider>
+          <RobotBleClientContext.Provider
+            value={
+              createRobotBleClientForPlatform(
+                Platform.OS,
+              ) as RobotBleClient<unknown>
+            }
+          >
+            {children}
+          </RobotBleClientContext.Provider>
+        </RequestRobotDeviceStrategyContext.Provider>
+      </RequestBluetoothPermissionsStrategyContext.Provider>
+    </BluetoothStateContext.Provider>
   );
 }
