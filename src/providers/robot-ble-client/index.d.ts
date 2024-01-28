@@ -66,6 +66,13 @@ interface RobotBleClient<TDevice> {
   ) => Promise<Subscription>;
 }
 
+type RequestDeviceStrategyOptions = {
+  /**
+   * Tempo máximo em milissegundos de espera para encontrar o robô.
+   */
+  timeout: number;
+};
+
 /**
  * Estratégia para parear com um robô que aceita conexões via bluetooth.
  */

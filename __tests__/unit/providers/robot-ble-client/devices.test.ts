@@ -1,4 +1,7 @@
-import { DeviceNotFoundError } from "@/providers/robot-ble-client";
+import {
+  DeviceNotFoundError,
+  TimeoutError,
+} from "@/providers/robot-ble-client";
 import {
   RequestDeviceNativeStrategy,
   RequestDeviceWebStrategy,
@@ -25,6 +28,7 @@ describe("RequestDeviceNativeStrategy", () => {
       } as unknown as BleManager;
       mockedDevice = { name: "TEST_DEVICE" } as unknown as Device;
       strategy = new RequestDeviceNativeStrategy(mockedManager);
+      jest.useFakeTimers();
     });
 
     it("should resolve with the device if the device name starts with the name prefix", async () => {
@@ -52,6 +56,22 @@ describe("RequestDeviceNativeStrategy", () => {
       ).rejects.toThrow(DeviceNotFoundError);
       expect(mockedManager.stopDeviceScan).toHaveBeenCalled();
     });
+
+    it("should reject with TimeoutError if the timeout is reached", async () => {
+      mockedManager.startDeviceScan = jest.fn((services, options, listener) => {
+        setTimeout(() => {
+          listener(null, mockedDevice);
+        }, 6000);
+      });
+      const resultPromise = strategy.execute(["service1", "service2"], "TEST");
+      jest.advanceTimersByTime(6000);
+      expect(resultPromise).rejects.toThrow(TimeoutError);
+      expect(mockedManager.stopDeviceScan).toHaveBeenCalled();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
   });
 });
 
@@ -67,11 +87,29 @@ describe("RequestDeviceWebStrategy", () => {
       } as unknown as Bluetooth;
       mockedDevice = { name: "TEST_DEVICE" } as unknown as BluetoothDevice;
       strategy = new RequestDeviceWebStrategy(mockedManager);
+      jest.useFakeTimers();
     });
 
     it("should resolve with the device if the device name starts with the name prefix", async () => {
       const result = await strategy.execute(["service1", "service2"], "TEST");
       expect(result).toBe(mockedDevice);
+    });
+
+    it("should reject with TimeoutError if the timeout is reached", async () => {
+      mockedManager.requestDevice = jest.fn(() => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(mockedDevice);
+          }, 6000);
+        });
+      });
+      const resultPromise = strategy.execute(["service1", "service2"], "TEST");
+      jest.advanceTimersByTime(6000);
+      await expect(resultPromise).rejects.toThrow(TimeoutError);
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
     });
   });
 });
