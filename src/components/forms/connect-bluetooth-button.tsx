@@ -1,10 +1,10 @@
 import { BaseError } from "@/errors";
+import { LINE_FOLLOWER_NAME_PREFIX } from "@/lib/ble/constants";
 import { useRobots } from "@/models/use-robots";
 import {
   BluetoothState,
   useRobotBleAdapter,
 } from "@/providers/robot-ble-client";
-import { LINE_FOLLOWER_NAME_PREFIX } from "@/providers/robot-ble-client/constants";
 import {
   Actionsheet,
   ActionsheetBackdrop,

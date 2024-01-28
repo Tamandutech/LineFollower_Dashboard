@@ -1,15 +1,12 @@
-import {
-  BleNativeClient,
-  BleWebClient,
-} from "@/providers/robot-ble-client/clients";
+import { BleNativeClient, BleWebClient } from "@/lib/ble/clients";
 import {
   RequestDeviceNativeStrategy,
   RequestDeviceWebStrategy,
-} from "@/providers/robot-ble-client/devices";
+} from "@/lib/ble/devices";
 import {
   createRequestRobotDeviceStrategyForPlatform,
   createRobotBleClientForPlatform,
-} from "@/providers/robot-ble-client/factories";
+} from "@/lib/ble/factories";
 
 jest.mock("react-native-ble-plx", () => ({
   BleManager: jest.fn(),

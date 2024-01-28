@@ -1,4 +1,10 @@
 import { useRobotContext } from "@/contexts/robot";
+import { PermissionsNotGranted } from "@/lib/ble/errors";
+import {
+  createRequestBluetoothPermissionsStrategyForPlatform,
+  createRequestRobotDeviceStrategyForPlatform,
+  createRobotBleClientForPlatform,
+} from "@/lib/ble/factories";
 import {
   type Dispatch,
   type PropsWithChildren,
@@ -9,18 +15,6 @@ import {
   useState,
 } from "react";
 import { Platform } from "react-native";
-import { PermissionsNotGranted } from "./errors";
-import {
-  createRequestBluetoothPermissionsStrategyForPlatform,
-  createRequestRobotDeviceStrategyForPlatform,
-  createRobotBleClientForPlatform,
-} from "./factories";
-
-export * from "./errors";
-export * from "./factories";
-export * from "./clients";
-export * from "./devices";
-export * from "./permissions";
 
 export enum BluetoothState {
   IDLE = "idle",

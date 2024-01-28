@@ -1,11 +1,8 @@
 import {
-  DeviceNotFoundError,
-  TimeoutError,
-} from "@/providers/robot-ble-client";
-import {
   RequestDeviceNativeStrategy,
   RequestDeviceWebStrategy,
-} from "@/providers/robot-ble-client/devices";
+} from "@/lib/ble/devices";
+import { DeviceNotFoundError, TimeoutError } from "@/lib/ble/errors";
 import {
   BleError,
   type BleErrorCodeMessageMapping,

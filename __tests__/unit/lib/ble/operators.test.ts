@@ -1,4 +1,4 @@
-import { dataToMessages } from "@/providers/robot-ble-client/operators";
+import { dataToMessages } from "@/lib/ble/operators";
 import { of } from "rxjs";
 import { TestScheduler } from "rxjs/testing";
 

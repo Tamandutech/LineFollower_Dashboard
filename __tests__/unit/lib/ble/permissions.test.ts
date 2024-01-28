@@ -2,7 +2,7 @@ import {
   RequestPermissionsAndroidStrategy,
   RequestPermissionsIOSStrategy,
   RequestPermissionsWebStrategy,
-} from "@/providers/robot-ble-client/permissions";
+} from "@/lib/ble/permissions";
 import { PermissionsAndroid } from "react-native";
 
 describe("RequestPermissionsIOSStrategy", () => {
