@@ -1,3 +1,5 @@
+import type { ValidationResult } from "@/lib/auth/validators";
+import { ServerError, UnauthorizedError } from "@/lib/http/errors";
 import { useFirebaseBackend } from "@/providers/firebase";
 import {
   type AuthError,
@@ -7,8 +9,6 @@ import {
   signOut,
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
-import { ServerError, UnauthorizedError } from "./errors";
-import type { ValidationResult } from "./validators";
 
 export type AuthContextType = {
   readonly user: User | null;

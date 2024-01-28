@@ -1,4 +1,4 @@
-import { NetworkError, createErrorForResponse } from "./errors";
+import { NetworkError, createErrorForResponse } from "@/lib/http/errors";
 
 /**
  * Busca o token de acesso do usuário no Github.

@@ -1,4 +1,4 @@
-import { NetworkError, createErrorForResponse } from "./errors";
+import { NetworkError, createErrorForResponse } from "@/lib/http/errors";
 
 export type ValidationResult = [boolean, null] | [null, Errors.IError];
 

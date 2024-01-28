@@ -1,9 +1,9 @@
 import Page from "@/components/layout/page";
 import { useColorMode } from "@/contexts/color-mode";
 import { useErrorModal } from "@/hooks/use-error-modal";
+import { fetchGithubAccessToken } from "@/lib/auth/utils";
+import { isTamandutechMember } from "@/lib/auth/validators";
 import { useAuth } from "@/providers/auth";
-import { fetchGithubAccessToken } from "@/providers/auth/utils";
-import { isTamandutechMember } from "@/providers/auth/validators";
 import {
   Button,
   ButtonIcon,
