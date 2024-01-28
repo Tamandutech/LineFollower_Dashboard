@@ -171,7 +171,9 @@ export function useRobotBleAdapter(): UseRobotBleClientReturn {
   };
 }
 
-export default function BleClientProvider({ children }: PropsWithChildren) {
+export default function RobotBleAdapterProvider({
+  children,
+}: PropsWithChildren) {
   return (
     <BluetoothStateContext.Provider
       value={useState<BluetoothState>(BluetoothState.IDLE)}

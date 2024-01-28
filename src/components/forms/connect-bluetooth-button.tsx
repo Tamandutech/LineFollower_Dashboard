@@ -4,7 +4,7 @@ import { useRobots } from "@/models/use-robots";
 import {
   BluetoothState,
   useRobotBleAdapter,
-} from "@/providers/robot-ble-client";
+} from "@/providers/robot-ble-adapter";
 import {
   Actionsheet,
   ActionsheetBackdrop,

@@ -8,7 +8,13 @@ import {
   signInWithCredential,
   signOut,
 } from "firebase/auth";
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  type ReactNode,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 export type AuthContextType = {
   readonly user: User | null;
@@ -22,7 +28,7 @@ export type AuthContextType = {
 };
 
 export type AuthProviderProps = {
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
