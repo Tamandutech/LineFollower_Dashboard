@@ -1,7 +1,7 @@
 import Page from "@/components/layout/page";
 import type { ColorModeOption } from "@/contexts/color-mode";
 import { useColorMode } from "@/contexts/color-mode";
-import { useAuth } from "@/providers/auth";
+import { useAuth, withAuthGuard } from "@/providers/auth";
 import {
   Avatar,
   AvatarFallbackText,
@@ -27,11 +27,12 @@ import {
   VStack,
   useToken,
 } from "@gluestack-ui/themed";
+import { Redirect } from "expo-router";
 import type { User } from "firebase/auth";
 import { ChevronDownIcon, LogOut, Palette } from "lucide-react-native";
 import { useState } from "react";
 
-export default function Profile() {
+function Profile() {
   const { user, logout } = useAuth();
   const iconColor = useToken("colors", "primary500");
 
@@ -135,3 +136,5 @@ function PreferencesSection() {
     </VStack>
   );
 }
+
+export default withAuthGuard(Profile, <Redirect href="/(app)/login" />);

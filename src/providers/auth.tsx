@@ -9,6 +9,7 @@ import {
   signOut,
 } from "firebase/auth";
 import {
+  type ComponentType,
   type ReactNode,
   createContext,
   useContext,
@@ -104,4 +105,19 @@ export default function AuthProvider({ children }: AuthProviderProps) {
       {children}
     </AuthContext.Provider>
   );
+}
+
+export function withAuthGuard<P extends JSX.IntrinsicAttributes>(
+  Component: ComponentType<P>,
+  fallback: ReactNode,
+) {
+  return function AuthGuard(props: P) {
+    const { isLoading, isAuthenticated } = useAuth();
+
+    if (isLoading || !isAuthenticated) {
+      return fallback;
+    }
+
+    return <Component {...props} />;
+  };
 }
