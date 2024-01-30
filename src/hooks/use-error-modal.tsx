@@ -45,7 +45,9 @@ export function useErrorModal(
  * @returns Componente envolvido com o modal de erro
  */
 export function withErrorModal<
-  T extends { onError: (error: Errors.IError) => void },
+  T extends {
+    onError: (error: Errors.IError) => void;
+  } & JSX.IntrinsicAttributes,
 >(Component: ComponentType<T>) {
   return function ErrorModalWrapper(
     props: ErrorModalWrapperProps<T, ComponentType<T>>,
