@@ -1,6 +1,6 @@
 import { BaseError } from "@/errors";
 import { LINE_FOLLOWER_NAME_PREFIX } from "@/lib/ble/constants";
-import { useRobots } from "@/models/use-robots";
+import { useRobots } from "@/models/robots";
 import {
   BluetoothState,
   useRobotBleAdapter,
