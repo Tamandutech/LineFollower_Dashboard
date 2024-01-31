@@ -113,6 +113,9 @@ function PreferencesSection() {
         </HStack>
         <Select
           selectedValue={selectedColorModeOption}
+          selectedLabel={
+            colorModeOptions.find((option) => option.value === colorMode)?.label
+          }
           w="$32"
           onValueChange={setColorModeToSelected as (arg: string) => void}
         >
