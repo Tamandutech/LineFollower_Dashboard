@@ -111,9 +111,13 @@ function PreferencesSection() {
           <Icon as={Palette} />
           <Text>Tema</Text>
         </HStack>
-        <Select selectedValue={selectedColorModeOption}>
+        <Select
+          selectedValue={selectedColorModeOption}
+          w="$32"
+          onValueChange={setColorModeToSelected as (arg: string) => void}
+        >
           <SelectTrigger variant="outline" size="sm">
-            <SelectInput placeholder="Selecione o tema de cores" />
+            <SelectInput placeholder="Selecione" />
             <SelectIcon mr="$3" as={ChevronDownIcon} />
           </SelectTrigger>
           <SelectPortal>
@@ -123,11 +127,7 @@ function PreferencesSection() {
                 <SelectDragIndicator />
               </SelectDragIndicatorWrapper>
               {colorModeOptions.map((option) => (
-                <SelectItem
-                  key={option.value}
-                  onPress={() => setColorModeToSelected(option.value)}
-                  {...option}
-                />
+                <SelectItem key={option.value} {...option} />
               ))}
             </SelectContent>
           </SelectPortal>
