@@ -107,7 +107,7 @@ function PreferencesSection() {
     <VStack space="md">
       <Heading>Preferências</Heading>
       <HStack justifyContent="space-between">
-        <HStack space="md">
+        <HStack space="md" alignItems="center">
           <Icon as={Palette} />
           <Text>Tema</Text>
         </HStack>
