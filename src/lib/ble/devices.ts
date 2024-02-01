@@ -21,7 +21,10 @@ abstract class RequestDeviceStrategy<TDevice, TBluetoothManager>
     return await withTimeout(
       this.procedure(services, namePrefix),
       this.options.timeout,
-      new TimeoutError(),
+      new TimeoutError({
+        message: "O robô não foi encontrado.",
+        action: "Certifique-se de que o robô está ligado e aceitando conexões.",
+      }),
     );
   }
 
