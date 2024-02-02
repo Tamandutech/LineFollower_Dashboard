@@ -2,7 +2,7 @@ import type { TRobotContext } from "@/contexts/robot";
 import {
   BluetoothState,
   type UseRobotBleClientReturn,
-} from "@/providers/robot-ble-client";
+} from "@/providers/robot-ble-adapter";
 import {
   type RenderHookResult,
   act,
@@ -18,7 +18,7 @@ const {
   RequestRobotDeviceStrategyContext,
   RobotBleClientContext,
   useRobotBleAdapter,
-} = jest.requireActual("@/providers/robot-ble-client");
+} = jest.requireActual("@/providers/robot-ble-adapter");
 
 describe("useRobotBleClient", () => {
   let mockedClient: RobotBleClient<unknown>;
