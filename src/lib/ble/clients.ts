@@ -137,6 +137,7 @@ export class BleNativeClient
           }
         });
       }).pipe(dataToMessages()),
+      { connector: () => new Subject(), resetOnDisconnect: false },
     );
     this.observables.set(id, connectableObservable);
   }
