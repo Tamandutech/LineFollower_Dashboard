@@ -1,4 +1,4 @@
-import type { TRobotContext } from "@/contexts/robot";
+import type { RobotContextType } from "@/contexts/robot";
 import {
   BluetoothState,
   type UseRobotBleClientReturn,
@@ -30,7 +30,7 @@ describe("useRobotBleClient", () => {
     unknown
   >;
   let robotBleClientMockProvider: React.FC;
-  let robotContextMock: jest.Mocked<TRobotContext>;
+  let robotContextMock: jest.Mocked<RobotContextType>;
 
   const configMock = {
     services: {

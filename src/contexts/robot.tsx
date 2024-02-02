@@ -7,14 +7,14 @@ import {
   useState,
 } from "react";
 
-export type TRobotContext = [
+export type RobotContextType = [
   Robot.BluetoothConnectionConfig | null,
   Dispatch<SetStateAction<Robot.BluetoothConnectionConfig | null>>,
 ];
 
-export const RobotContext = createContext([null, () => {}] as TRobotContext);
+export const RobotContext = createContext([null, () => {}] as RobotContextType);
 
-export function useRobotContext(): TRobotContext {
+export function useRobotContext(): RobotContextType {
   return useContext(RobotContext);
 }
 

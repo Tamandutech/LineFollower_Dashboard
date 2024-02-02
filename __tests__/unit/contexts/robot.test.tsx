@@ -1,4 +1,4 @@
-import { RobotContext, type TRobotContext } from "@/contexts/robot";
+import { RobotContext, type RobotContextType } from "@/contexts/robot";
 import type { ComponentProps, ComponentType, FC } from "react";
 
 /**
@@ -9,8 +9,11 @@ import type { ComponentProps, ComponentType, FC } from "react";
  */
 export function withRobotContext(
   Component: ComponentType,
-): [jest.Mocked<TRobotContext>, FC] {
-  const mockRobotContextValue = [null, jest.fn()] as jest.Mocked<TRobotContext>;
+): [jest.Mocked<RobotContextType>, FC] {
+  const mockRobotContextValue = [
+    null,
+    jest.fn(),
+  ] as jest.Mocked<RobotContextType>;
   return [
     mockRobotContextValue,
     function RobotContextWrapper(props: ComponentProps<typeof Component>) {
