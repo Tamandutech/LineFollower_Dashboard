@@ -237,7 +237,6 @@ export class BleNativeClient
     if (
       !this.characteristics.has(txCharacteristicId) ||
       !this.characteristics.get(txCharacteristicId)?.isNotifiable ||
-      !this.characteristics.get(txCharacteristicId)?.isReadable ||
       !this.observables.has(txCharacteristicId)
     ) {
       throw new ConnectionError({
