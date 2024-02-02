@@ -35,16 +35,16 @@ export default function RootLayout() {
   }
 
   return (
-    <UIThemeProvider>
-      <FirebaseBackendProvider>
-        <AuthProvider>
-          <RobotContextProvider>
-            <RobotBleAdapterProvider>
+    <RobotBleAdapterProvider>
+      <UIThemeProvider>
+        <FirebaseBackendProvider>
+          <AuthProvider>
+            <RobotContextProvider>
               <Slot />
-            </RobotBleAdapterProvider>
-          </RobotContextProvider>
-        </AuthProvider>
-      </FirebaseBackendProvider>
-    </UIThemeProvider>
+            </RobotContextProvider>
+          </AuthProvider>
+        </FirebaseBackendProvider>
+      </UIThemeProvider>
+    </RobotBleAdapterProvider>
   );
 }
