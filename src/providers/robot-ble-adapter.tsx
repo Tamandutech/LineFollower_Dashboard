@@ -175,8 +175,10 @@ export default function RobotBleAdapterProvider({
   children,
 }: PropsWithChildren) {
   return (
-    <BluetoothStateContext.Provider
-      value={useState<BluetoothState>(BluetoothState.IDLE)}
+    <RobotBleClientContext.Provider
+      value={
+        createRobotBleClientForPlatform(Platform.OS) as RobotBleClient<unknown>
+      }
     >
       <RequestBluetoothPermissionsStrategyContext.Provider
         value={createRequestBluetoothPermissionsStrategyForPlatform(
@@ -186,17 +188,19 @@ export default function RobotBleAdapterProvider({
         <RequestRobotDeviceStrategyContext.Provider
           value={createRequestRobotDeviceStrategyForPlatform(Platform.OS)}
         >
-          <RobotBleClientContext.Provider
-            value={
-              createRobotBleClientForPlatform(
-                Platform.OS,
-              ) as RobotBleClient<unknown>
-            }
-          >
-            {children}
-          </RobotBleClientContext.Provider>
+          <BluetoothStateProvider>{children}</BluetoothStateProvider>
         </RequestRobotDeviceStrategyContext.Provider>
       </RequestBluetoothPermissionsStrategyContext.Provider>
+    </RobotBleClientContext.Provider>
+  );
+}
+
+function BluetoothStateProvider({ children }: PropsWithChildren) {
+  return (
+    <BluetoothStateContext.Provider
+      value={useState<BluetoothState>(BluetoothState.IDLE)}
+    >
+      {children}
     </BluetoothStateContext.Provider>
   );
 }
