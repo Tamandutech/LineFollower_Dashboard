@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import mitt from "mitt";
 import type { BleManager, Characteristic, Device } from "react-native-ble-plx";
 import {
@@ -133,7 +134,9 @@ export class BleNativeClient
               }),
             );
           } else if (characteristic?.value) {
-            subscriber.next(characteristic.value);
+            subscriber.next(
+              Buffer.from(characteristic.value, "base64").toString("utf-8"),
+            );
           }
         });
       }).pipe(dataToMessages()),
@@ -216,7 +219,7 @@ export class BleNativeClient
     try {
       await this.characteristics
         .get(rxCharacteristicId)
-        ?.writeWithoutResponse(message);
+        ?.writeWithoutResponse(Buffer.from(message).toString("base64"));
     } catch (error) {
       if (error instanceof Error) {
         throw new CharacteristicWriteError({ cause: error });

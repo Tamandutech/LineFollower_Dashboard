@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import { BleNativeClient, BleWebClient } from "@/lib/ble/clients";
 import { randomUUID } from "expo-crypto";
 import type { BleManager, Characteristic, Device } from "react-native-ble-plx";
@@ -182,14 +183,16 @@ describe("RobotBleNativeClient", () => {
       );
     });
 
-    it("should write the message to the characteristic", async () => {
+    it("should write the message converted to Base64 to the characteristic", async () => {
       await client.connect(mockedDevice, configMock);
       await client.send(RX_MOCK_ID, "test");
 
       const characteristic = mockedCharacteristics.get(
         RX_MOCK_ID,
       ) as Characteristic;
-      expect(characteristic.writeWithoutResponse).toHaveBeenCalledWith("test");
+      expect(characteristic.writeWithoutResponse).toHaveBeenCalledWith(
+        Buffer.from("test").toString("base64"),
+      );
     });
   });
 
