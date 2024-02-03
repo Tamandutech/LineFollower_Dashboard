@@ -20,16 +20,18 @@ const {
   useRobotBleAdapter,
 } = jest.requireActual("@/providers/robot-ble-adapter");
 
-describe("useRobotBleClient", () => {
-  let mockedClient: RobotBleClient<unknown>;
+describe("useRobotBleAdapter", () => {
+  let mockedClient: jest.Mocked<RobotBleClient<unknown>>;
   const mockedDevice: unknown = { name: "test-device" };
-  let mockedRequestDeviceStrategy: RequestRobotDeviceStrategy<unknown>;
-  let mockedRequestPermissionStrategy: RequestBluetoothPermissionsStrategy;
+  let mockedRequestDeviceStrategy: jest.Mocked<
+    RequestRobotDeviceStrategy<unknown>
+  >;
+  let mockedRequestPermissionStrategy: jest.Mocked<RequestBluetoothPermissionsStrategy>;
   let useRobotBleClientResultWrapper: RenderHookResult<
     UseRobotBleClientReturn,
     unknown
   >;
-  let robotBleClientMockProvider: React.FC;
+  let RobotBleClientMockProvider: React.FC;
   let robotContextMock: jest.Mocked<RobotContextType>;
 
   const configMock = {
@@ -46,15 +48,23 @@ describe("useRobotBleClient", () => {
     mockedClient = {
       connect: jest.fn(),
       disconnect: jest.fn(),
-    } as unknown as RobotBleClient<unknown>;
+      send: jest.fn(),
+      isConnected: jest.fn(),
+      subscribeToTxCharacteristic: jest.fn(),
+      request: jest.fn(),
+    };
     mockedRequestDeviceStrategy = {
-      execute: jest.fn(() => Promise.resolve(mockedDevice)),
-    } as unknown as RequestRobotDeviceStrategy<unknown>;
+      execute: jest
+        .fn()
+        .mockImplementation(() => Promise.resolve(mockedDevice)),
+    };
     mockedRequestPermissionStrategy = {
-      execute: jest.fn(() => Promise.resolve({ granted: true })),
-    } as unknown as RequestBluetoothPermissionsStrategy;
-    [robotContextMock, robotBleClientMockProvider] = withRobotContext(
-      function RobotBleClientMockProvider({ children }: PropsWithChildren) {
+      execute: jest
+        .fn()
+        .mockImplementation(() => Promise.resolve({ granted: true })),
+    };
+    [robotContextMock, RobotBleClientMockProvider] = withRobotContext(
+      function RobotBleClientAdapterProvider({ children }: PropsWithChildren) {
         return (
           <BluetoothStateContext.Provider value={useState(BluetoothState.IDLE)}>
             <RobotBleClientContext.Provider value={mockedClient}>
@@ -74,11 +84,11 @@ describe("useRobotBleClient", () => {
     );
 
     useRobotBleClientResultWrapper = renderHook(useRobotBleAdapter, {
-      wrapper: robotBleClientMockProvider,
+      wrapper: RobotBleClientMockProvider,
     });
   });
 
-  it("should return a client", () => {
+  it("should return a client", async () => {
     expect(useRobotBleClientResultWrapper.result.current.client).toBe(
       mockedClient,
     );
@@ -100,11 +110,12 @@ describe("useRobotBleClient", () => {
 
   describe("user denied permissions", () => {
     beforeEach(() => {
-      mockedRequestPermissionStrategy.execute = jest
-        .fn()
-        .mockResolvedValue({ granted: false, action: "Test" });
+      mockedRequestPermissionStrategy.execute.mockResolvedValue({
+        granted: false,
+        action: "Test",
+      });
       useRobotBleClientResultWrapper = renderHook(useRobotBleAdapter, {
-        wrapper: robotBleClientMockProvider,
+        wrapper: RobotBleClientMockProvider,
       });
     });
 
@@ -120,11 +131,11 @@ describe("useRobotBleClient", () => {
 
   describe("user granted permissions", () => {
     beforeEach(() => {
-      mockedRequestPermissionStrategy.execute = jest
-        .fn()
-        .mockResolvedValue({ granted: true });
+      mockedRequestPermissionStrategy.execute.mockResolvedValue({
+        granted: true,
+      });
       useRobotBleClientResultWrapper = renderHook(useRobotBleAdapter, {
-        wrapper: robotBleClientMockProvider,
+        wrapper: RobotBleClientMockProvider,
       });
     });
 
