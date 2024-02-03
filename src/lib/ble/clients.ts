@@ -9,7 +9,7 @@ import {
   connectable,
   first,
 } from "rxjs";
-import { TextEncoder } from "text-encoding";
+import { TextDecoder, TextEncoder } from "text-encoding";
 import { CharacteristicWriteError, ConnectionError } from "./errors";
 import { dataToMessages } from "./operators";
 
@@ -123,7 +123,7 @@ export class BleNativeClient
     txCharacteristic: Characteristic,
   ): void {
     const connectableObservable = connectable(
-      new Observable<string | DataView>((subscriber) => {
+      new Observable<string>((subscriber) => {
         txCharacteristic.monitor((error, characteristic) => {
           if (error) {
             subscriber.error(
@@ -256,6 +256,7 @@ export class BleWebClient
   implements RobotBleClient<BluetoothDevice>
 {
   private readonly encoder = new TextEncoder();
+  private readonly decoder = new TextDecoder();
   private readonly characteristics: Map<
     string,
     BluetoothRemoteGATTCharacteristic
@@ -272,10 +273,14 @@ export class BleWebClient
     txCharacteristic: BluetoothRemoteGATTCharacteristic,
   ): void {
     const connectableObservable = connectable(
-      new Observable<string | DataView>((subscriber) => {
+      new Observable<string>((subscriber) => {
         txCharacteristic.addEventListener("characteristicvaluechanged", () => {
           if (txCharacteristic.value) {
-            subscriber.next(txCharacteristic.value);
+            subscriber.next(
+              this.decoder.decode(
+                new Uint8Array(txCharacteristic.value.buffer),
+              ),
+            );
           }
         });
       }).pipe(dataToMessages()),
