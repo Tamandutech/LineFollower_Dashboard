@@ -1,21 +1,4 @@
 declare namespace Robot {
-  enum Status {
-    CAR_IN_CURVE = 0,
-    CAR_IN_LINE = 1,
-    CAR_STOPPED = 2,
-  }
-
-  enum MemoryDevices {
-    RAM,
-    FLASH,
-  }
-
-  enum BatteryLevel {
-    OK = "OK",
-    LOW = "LOW",
-    CRITIC = "CRITIC",
-  }
-
   type BatteryStatus = {
     voltage: number; // em mV
     time: Date;
