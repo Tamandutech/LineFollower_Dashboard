@@ -102,6 +102,20 @@ describe("useRobotBatteryStatus", () => {
   });
 
   describe("battery level", () => {
+    it("should be low if the voltage is bellow 6,00V", async () => {
+      mockedClient.request.mockImplementationOnce(
+        (): Promise<Robot.Response<string>> =>
+          Promise.resolve({ cmdExecd: "bat_voltage", data: "600mV" }),
+      );
+
+      const { result } = renderHook(useRobotBatteryStatus, {
+        wrapper: RobotBleAdapterMockProvider,
+      });
+      await act(() => jest.runAllTimers());
+
+      expect(result.current.level).toBe(BatteryLevel.CRITIC);
+    });
+
     it("should be low if the voltage is bellow the user defined threshold", async () => {
       mockedClient.request.mockImplementationOnce(
         (): Promise<Robot.Response<string>> =>
@@ -113,7 +127,7 @@ describe("useRobotBatteryStatus", () => {
       });
       await act(() => jest.runAllTimers());
 
-      expect(result.current.level).toBe(BatteryLevel.LOW);
+      expect(result.current.level).toBe(BatteryLevel.CRITIC);
     });
 
     it("should be unknown if the voltage is not available", async () => {

@@ -71,11 +71,11 @@ export function useRobotBatteryStatus(): UseRobotBatteryStatusReturn {
 
   function calculateLevel(): BatteryLevel {
     if (data) {
-      if (data.voltage < settings.batteryLowWarningThreshold) {
-        return BatteryLevel.LOW;
-      }
       if (data.voltage < 6000) {
         return BatteryLevel.CRITIC;
+      }
+      if (data.voltage < settings.batteryLowWarningThreshold) {
+        return BatteryLevel.LOW;
       }
       return BatteryLevel.OK;
     }
