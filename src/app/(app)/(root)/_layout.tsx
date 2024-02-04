@@ -1,14 +1,17 @@
+import RobotBatteryStatusBox from "@/components/data/robot-batery-status-box";
 import CompetitionSelect from "@/components/forms/competition-select";
 import UserAvatar from "@/components/media/user-avatar";
+import { useRobotContext } from "@/contexts/robot";
 import { useCompetition } from "@/models/sessions";
 import { useAuth } from "@/providers/auth";
-import { Pressable } from "@gluestack-ui/themed";
+import { HStack, Pressable } from "@gluestack-ui/themed";
 import { Redirect, SplashScreen, Stack, router } from "expo-router";
 import { useEffect } from "react";
 
 export default function RootLayout() {
   const { isLoading, isAuthenticated, user } = useAuth();
   const { update } = useCompetition();
+  const [robot] = useRobotContext();
 
   useEffect(() => {
     if (!isLoading) {
@@ -30,9 +33,14 @@ export default function RootLayout() {
       screenOptions={{
         headerShown: true,
         headerRight: () => (
-          <Pressable onPress={() => router.push(user ? "/profile" : "/login")}>
-            <UserAvatar user={user} />
-          </Pressable>
+          <HStack alignItems="center" space="md">
+            {robot && <RobotBatteryStatusBox />}
+            <Pressable
+              onPress={() => router.push(user ? "/profile" : "/login")}
+            >
+              <UserAvatar user={user} />
+            </Pressable>
+          </HStack>
         ),
         headerLeft: () => (
           <CompetitionSelect
