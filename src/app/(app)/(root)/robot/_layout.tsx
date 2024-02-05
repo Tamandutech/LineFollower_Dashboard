@@ -1,44 +1,61 @@
+import { useColorMode } from "@/contexts/color-mode";
+import { useNavigationTheme } from "@/providers/theme";
 import { Icon, Text, useToken } from "@gluestack-ui/themed";
 import { Tabs } from "expo-router";
-import { AreaChart, Home, Map as Mapping, Sliders } from "lucide-react-native";
-import type { ComponentType, ReactNode } from "react";
+import {
+  AreaChart,
+  Home,
+  MapIcon,
+  Settings,
+  Sliders,
+} from "lucide-react-native";
+import type { FC } from "react";
 
-function asTabBarIcon(Base: ComponentType<IconProps>) {
-  return <Base size={24} />;
-}
-
-const pages = new Map<string, { title: string; icon: ReactNode }>([
-  ["", { title: "Início", icon: asTabBarIcon(Home) }],
+const pages = new Map<string, { title: string; icon: FC }>([
+  ["index", { title: "Início", icon: Home }],
   [
     "parameters",
     {
       title: "Parâmetros",
-      icon: asTabBarIcon(Sliders),
+      icon: Sliders,
     },
   ],
   [
     "mapping",
     {
       title: "Mapeamento",
-      icon: asTabBarIcon(Mapping),
+      icon: MapIcon,
     },
   ],
   [
     "streams",
     {
       title: "Transmissões",
-      icon: asTabBarIcon(AreaChart),
+      icon: AreaChart,
     },
   ],
+  ["options", { title: "Opções", icon: Settings }],
 ]);
 
 export default function MainLayout() {
+  const [colorMode] = useColorMode();
   const activeColor = useToken("colors", "primary500");
-  const inactiveColor = useToken("colors", "tertiary500");
+  const inactiveColor = useToken(
+    "colors",
+    colorMode === "dark" ? "tertiary500" : "tertiary300",
+  );
+  const {
+    colors: { text: textColor },
+  } = useNavigationTheme();
   return (
     <Tabs
       screenOptions={{
-        tabBarLabel: ({ children }) => <Text size="sm">{children}</Text>,
+        tabBarLabel: ({ children, color, focused }) =>
+          focused && (
+            <Text size="xs" color={color === activeColor ? textColor : color}>
+              {children}
+            </Text>
+          ),
         tabBarActiveTintColor: activeColor,
         tabBarInactiveTintColor: inactiveColor,
       }}
@@ -49,7 +66,9 @@ export default function MainLayout() {
           name={name}
           options={{
             title,
-            tabBarIcon: ({ color }) => <Icon as={icon} color={color} />,
+            tabBarIcon: ({ color }) => (
+              <Icon as={icon} color={color} size="xl" />
+            ),
             headerShown: false,
           }}
         />
