@@ -42,6 +42,11 @@ export type UseRobotBatteryStatusReturn = {
   history: Robot.BatteryStatus[];
 };
 
+export const batteryVoltageFormatter = new Intl.NumberFormat("pt-BR", {
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+});
+
 export function useRobotBatteryStatus(): UseRobotBatteryStatusReturn {
   const [robot] = useRobotContext();
   const { settings } = useSettings();
