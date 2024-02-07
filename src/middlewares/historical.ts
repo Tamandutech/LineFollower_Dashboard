@@ -7,7 +7,7 @@ import type { SWRConfiguration } from "swr/_internal";
  */
 export default function historical<Data>(
   useSWRNext: SWRHook,
-): <Data, Error>(
+): <Error>(
   key: Key,
   fetcher: BareFetcher<Data> | null,
   config: SWRConfiguration<Data, Error, BareFetcher<Data>>,
@@ -15,7 +15,7 @@ export default function historical<Data>(
   Data,
   Error,
   SWRConfiguration<Data, Error, BareFetcher<Data>>
-> {
+> & { history: Data[] } {
   return (key, fetcher, config) => {
     const history = useRef<Data[]>([]);
 
