@@ -1,3 +1,4 @@
+import CompetitionSelect from "@/components/forms/competition-select";
 import Page from "@/components/layout/page";
 import DenseSelect from "@/components/ui/dense-select";
 import {
@@ -6,7 +7,7 @@ import {
 } from "@/constants/options";
 import { useRobotContext } from "@/contexts/robot";
 import { useRobotBatteryStatus } from "@/models/battery";
-import { useSettings } from "@/models/sessions";
+import { useCompetition, useSettings } from "@/models/sessions";
 import { withAuthGuard } from "@/providers/auth";
 import {
   Divider,
@@ -25,6 +26,7 @@ import {
   Code2,
   Settings,
   Timer,
+  Trophy,
 } from "lucide-react-native";
 import {
   type ComponentProps,
@@ -40,6 +42,8 @@ function OptionsScreen() {
         <RobotSection />
         <Divider />
         <BatteryMonitoringSection />
+        <Divider />
+        <CompetitionsSection />
       </VStack>
     </Page>
   );
@@ -118,6 +122,25 @@ function BatteryMonitoringSection() {
             <SelectItem key={label} value={String(value)} label={label} />
           ))}
         </DenseSelect>
+      </Option>
+    </Section>
+  );
+}
+
+function CompetitionsSection() {
+  const { competition, update } = useCompetition();
+  return (
+    <Section title="Competições">
+      <Option
+        label="Competição atual"
+        icon={Trophy}
+        help={competition?.toString()}
+      >
+        <CompetitionSelect
+          onChange={(competition) => update(competition.ref)}
+          selectedCompetition={competition}
+          dense
+        />
       </Option>
     </Section>
   );
