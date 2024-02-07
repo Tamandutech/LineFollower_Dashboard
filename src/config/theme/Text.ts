@@ -39,6 +39,12 @@ export const Text = createStyle({
       true: {
         fontSize: "$xs",
         lineHeight: "$xs",
+        _dark: {
+          color: "$tertiary500",
+        },
+        _light: {
+          color: "$tertiary300",
+        },
       },
     },
     italic: {
