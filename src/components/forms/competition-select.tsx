@@ -2,29 +2,25 @@ import {
   type CompetitionWithRef,
   useCompetitions,
 } from "@/models/competitions";
-import {
-  Center,
-  Select,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicator,
-  SelectDragIndicatorWrapper,
-  SelectIcon,
-  SelectInput,
-  SelectItem,
-  SelectPortal,
-  SelectTrigger,
-  Spinner,
-} from "@gluestack-ui/themed";
-import { ChevronDownIcon } from "lucide-react-native";
+import { Center, SelectItem, Spinner } from "@gluestack-ui/themed";
+import DenseSelect from "../ui/dense-select";
+import Select from "../ui/select";
+
 import type { ComponentProps } from "react";
 
 type CompetitionSelectProps = {
   onChange: (competition: CompetitionWithRef) => void;
-} & ComponentProps<typeof Select>;
+  dense?: boolean;
+  selectedCompetition?: CompetitionWithRef;
+} & Omit<
+  ComponentProps<typeof Select>,
+  "selectedValue" | "selectedLabel" | "defaultValue"
+>;
 
 export default function CompetitionSelect({
   onChange,
+  selectedCompetition,
+  dense = false,
   ...props
 }: CompetitionSelectProps) {
   const { competitions } = useCompetitions();
@@ -38,35 +34,41 @@ export default function CompetitionSelect({
     }
   }
 
-  return (
-    <Select {...props} onValueChange={handleSelect}>
-      <SelectTrigger size="md" w="$48">
-        <SelectInput onChangeText={handleSelect} placeholder="Competição" />
-        <SelectIcon mr="$3" as={ChevronDownIcon} />
-      </SelectTrigger>
-      <SelectPortal>
-        <SelectBackdrop />
-        <SelectContent>
-          <SelectDragIndicatorWrapper>
-            <SelectDragIndicator />
-          </SelectDragIndicatorWrapper>
-          {competitions ? (
-            competitions.map((competition) => (
-              <SelectItem
-                key={competition.id}
-                label={`${competition.name} (${competition.year})`}
-                value={competition.ref.id}
-              >
-                {competition.name}
-              </SelectItem>
-            ))
-          ) : (
-            <Center h="$full" w="$full">
-              <Spinner size="large" />
-            </Center>
-          )}
-        </SelectContent>
-      </SelectPortal>
+  const content = competitions ? (
+    competitions.map((competition) => (
+      <SelectItem
+        key={competition.id}
+        label={String(competition)}
+        value={competition.ref.id}
+      >
+        {competition.name}
+      </SelectItem>
+    ))
+  ) : (
+    <Center h="$full" w="$full">
+      <Spinner size="large" />
+    </Center>
+  );
+
+  return dense ? (
+    <DenseSelect
+      {...props}
+      onValueChange={handleSelect}
+      selectedValue={selectedCompetition?.ref.id}
+    >
+      {content}
+    </DenseSelect>
+  ) : (
+    <Select
+      {...props}
+      onValueChange={handleSelect}
+      size="md"
+      w="$48"
+      placeholder="Competição"
+      selectedLabel={selectedCompetition?.toString()}
+      selectedValue={selectedCompetition?.ref.id}
+    >
+      {content}
     </Select>
   );
 }
