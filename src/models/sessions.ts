@@ -1,3 +1,4 @@
+import laggy from "@/middlewares/laggy";
 import { useAuth } from "@/providers/auth";
 import { useFirebaseBackend } from "@/providers/firebase";
 import {
@@ -7,6 +8,10 @@ import {
   setDoc,
 } from "firebase/firestore";
 import useSWR, { type KeyedMutator } from "swr";
+import {
+  type CompetitionWithRef,
+  converter as competitionConverter,
+} from "./competitions";
 
 export type UseSessionReturn = {
   /**
@@ -34,7 +39,7 @@ export type UseCompetitionReturn = {
   /**
    * Competição selecionada pelo usuário.
    */
-  competition?: Competition;
+  competition?: CompetitionWithRef;
 
   /**
    * Indica se a busca pela competição está em andamento.
@@ -131,20 +136,25 @@ export function useSession(): UseSessionReturn {
 export function useCompetition(): UseCompetitionReturn {
   const { db } = useFirebaseBackend();
   const { session, mutate } = useSession();
-  const { data, error, isLoading } = useSWR(session?.competition, async () => {
-    const competitionDocRef = session?.competition;
-    if (!competitionDocRef) {
+  const { data, error, isLoading } = useSWR(
+    session?.competition,
+    async () => {
+      const competitionDocRef = session?.competition;
+      if (!competitionDocRef) {
+        return undefined;
+      }
+
+      const competitionDocSnapshot = await getDoc(
+        competitionDocRef.withConverter(competitionConverter),
+      );
+      if (competitionDocSnapshot.exists()) {
+        return competitionDocSnapshot.data();
+      }
+
       return undefined;
-    }
-
-    const competitionDocSnapshot = await getDoc(competitionDocRef);
-    if (competitionDocSnapshot.exists()) {
-      const competition = competitionDocSnapshot.data() as Competition;
-      return competition;
-    }
-
-    return undefined;
-  });
+    },
+    { use: [laggy] },
+  );
 
   return {
     competition: data,
