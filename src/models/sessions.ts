@@ -67,11 +67,25 @@ export type UseSettingsReturn = {
 /**
  * Configurações padrão do usuário.
  */
-const defaultSettings: Settings = {
+export const defaultSettings: Settings = {
   batteryStatusUpdateInterval: 60000,
   batteryLowWarningThreshold: 6000,
   batteryLowWarningInterval: 60000,
 };
+
+/**
+ * Retorna uma função que atualiza a sessão do usuário.
+ *
+ * @param db Instância do Firestore.
+ * @param session Sessão do usuário.
+ */
+function updateFn(db: Firebase.Services.Firestore, session: Session) {
+  return async () => {
+    const userDocRef = doc(db, "users", session.userId);
+    await setDoc(userDocRef, session, { merge: true });
+    return session;
+  };
+}
 
 /**
  * Hook para acessar a sessão do usuário (preferências e competição atual).
@@ -89,9 +103,7 @@ export function useSession(): UseSessionReturn {
       const userDocRef = doc(db, "users", user.uid);
       const userDocSnapshot = await getDoc(userDocRef);
       if (userDocSnapshot.exists()) {
-        const session = userDocSnapshot.data() as Session;
-
-        return session;
+        return userDocSnapshot.data() as Session;
       }
 
       const session: Session = {
@@ -139,18 +151,12 @@ export function useCompetition(): UseCompetitionReturn {
     isLoading,
     error,
     update: async (ref) => {
-      await mutate(async (prev) => {
-        if (!prev) {
-          return undefined;
-        }
+      if (!session) {
+        return;
+      }
 
-        const userDocRef = doc(db, "users", prev.userId);
-        await setDoc(
-          userDocRef,
-          { ...prev, competition: ref },
-          { merge: true },
-        );
-      });
+      const newSession = { ...session, competition: ref };
+      await mutate(updateFn(db, newSession), { optimisticData: newSession });
     },
   };
 }
@@ -165,18 +171,15 @@ export function useSettings(): UseSettingsReturn {
   return {
     settings: session?.settings ?? defaultSettings,
     update: async (settings) => {
-      await mutate(async (prev) => {
-        if (!prev) {
-          return undefined;
-        }
+      if (!session) {
+        return;
+      }
 
-        const userDocRef = doc(db, "users", prev.userId);
-        await setDoc(
-          userDocRef,
-          { ...prev, settings: { ...prev.settings, ...settings } },
-          { merge: true },
-        );
-      });
+      const newSession = {
+        ...session,
+        settings: { ...session.settings, ...settings },
+      };
+      await mutate(updateFn(db, newSession), { optimisticData: newSession });
     },
   };
 }
