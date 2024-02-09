@@ -110,6 +110,7 @@ export default function ConnectBluetoothButton({
       <Actionsheet
         isOpen={showRobotsSelectSheet}
         onClose={toggleRobotsSelectSheet}
+        testID="robots-select-sheet"
       >
         <ActionsheetBackdrop />
         <ActionsheetContent h="$72" zIndex={999}>
@@ -118,7 +119,7 @@ export default function ConnectBluetoothButton({
           </ActionsheetDragIndicatorWrapper>
           {isLoading ? (
             <Center h="$full" w="$full">
-              <Spinner size="large" />
+              <Spinner size="large" testID="connecting-spinner" />
             </Center>
           ) : (
             robots?.map((robot) => (
