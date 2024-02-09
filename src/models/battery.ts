@@ -1,10 +1,12 @@
 import { useRobotContext } from "@/contexts/robot";
 import { UART_RX, UART_TX } from "@/lib/ble";
 import responseData from "@/middlewares/data";
-import historical from "@/middlewares/historical";
+import historical, {
+  type HistoricalSWRResponse,
+} from "@/middlewares/historical";
 import parser from "@/middlewares/parser";
 import { useRobotBleAdapter } from "@/providers/robot-ble-adapter";
-import useSWR, { type SWRResponse } from "swr";
+import useSWR from "swr";
 import { useSettings } from "./sessions";
 
 export enum BatteryLevel {
@@ -70,9 +72,7 @@ export function useRobotBatteryStatus(): UseRobotBatteryStatusReturn {
       ],
       refreshInterval: settings.batteryLowWarningInterval,
     },
-  ) as unknown as SWRResponse<Robot.BatteryStatus, Errors.IError> & {
-    history: Robot.BatteryStatus[];
-  };
+  ) as unknown as HistoricalSWRResponse<Robot.BatteryStatus, Errors.IError>;
 
   function calculateLevel(): BatteryLevel {
     if (data) {
