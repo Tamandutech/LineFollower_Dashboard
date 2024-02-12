@@ -1,7 +1,4 @@
 import {
-  ChevronRightIcon,
-  Icon,
-  Pressable,
   Select,
   SelectBackdrop,
   SelectContent,
@@ -12,6 +9,7 @@ import {
   SelectTrigger,
 } from "@gluestack-ui/themed";
 import { type ComponentProps, type PropsWithChildren, useState } from "react";
+import PressableChevron from "./pressable-chevron";
 
 type DenseSelectProps = PropsWithChildren<{
   onValueChange: ComponentProps<typeof Select>["onValueChange"];
@@ -35,9 +33,7 @@ export default function DenseSelect({
 
   return (
     <>
-      <Pressable onPress={toggleShow} h="auto" w="auto" hitSlop={16}>
-        <Icon as={ChevronRightIcon} />
-      </Pressable>
+      <PressableChevron onPress={toggleShow} />
       <Select
         onClose={toggleShow}
         display="none"
