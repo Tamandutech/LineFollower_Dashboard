@@ -1,5 +1,5 @@
-import RobotBatteryStatusBox from "@/components/data/robot-batery-status-box";
 import UserAvatar from "@/components/media/user-avatar";
+import RobotControlsPopover from "@/components/overlay/robot-controls-popover";
 import { useRobotContext } from "@/contexts/robot";
 import { useAuth } from "@/providers/auth";
 import { HStack, Pressable } from "@gluestack-ui/themed";
@@ -38,7 +38,13 @@ export default function RootLayout() {
             </Pressable>
           </HStack>
         ),
-        headerLeft: () => (robot ? <RobotBatteryStatusBox /> : null),
+        headerLeft: () =>
+          robot ? (
+            <RobotControlsPopover
+              placement="bottom left"
+              onDisconnect={() => router.replace("/(app)/(root)/")}
+            />
+          ) : null,
         headerTitle: () => null,
       }}
     >
