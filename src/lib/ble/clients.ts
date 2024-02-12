@@ -335,6 +335,7 @@ export class BleWebClient
       this.observables.clear();
       this.characteristics.clear();
       await this.device.gatt.disconnect();
+      this.emitter.emit(RobotBleClientEvent.DISCONNECTED);
     }
   }
 
