@@ -33,8 +33,10 @@ import {
   type ComponentProps,
   type ReactNode,
   useEffect,
+  useMemo,
   useState,
 } from "react";
+import useAsyncFn from "react-use/lib/useAsyncFn";
 import RobotBatteryStatusBox from "../data/robot-batery-status-box";
 import ConfirmActionModal from "../ui/confirm-action-modal";
 
@@ -49,22 +51,29 @@ export default function RobotControlsPopover({
   onDisconnect,
   ...props
 }: RobotControlsPopoverProps) {
-  const [error, setError] = useState<Errors.IError | null>(null);
   const [robot] = useRobotContext();
   const { reveal, isRevealed, state } = useConfirmActionModal();
   const { client: bleClient, disconnect } = useRobotBleAdapter();
   const { status } = useRobotBatteryStatus();
   const { toggle, isPaused } = useRobotSystem(bleClient, UART_TX, UART_RX);
   const [connected, setConnected] = useState(false);
-  const errorModal = useErrorModal(error, () => setError(null));
+  const [{ error: disconnectError }, doDisconnect] = useAsyncFn(async () => {
+    await disconnect();
+    onDisconnect();
+  });
+  const [{ error: toggleError }, doToggle] = useAsyncFn(async () => {
+    await toggle();
+  });
+  const errorModal = useErrorModal(
+    useMemo(
+      () => disconnectError || toggleError,
+      [disconnectError, toggleError],
+    ) as Errors.IError | undefined,
+  );
 
   useEffect(() => {
     async function checkIsConnected() {
-      try {
-        setConnected(await bleClient.isConnected());
-      } catch (error) {
-        setError(error as Errors.IError);
-      }
+      setConnected(await bleClient.isConnected());
     }
     if (!connected) {
       checkIsConnected();
@@ -76,23 +85,8 @@ export default function RobotControlsPopover({
       header: "Desconectar robô",
       content:
         "Tem certeza que deseja desconectar o robô? Transmissões em andamento serão interrompidas e alterações não salvas serão perdidas.",
-      onConfirm: async () => {
-        try {
-          await disconnect();
-          onDisconnect();
-        } catch (error) {
-          setError(error as Errors.IError);
-        }
-      },
+      onConfirm: doDisconnect,
     });
-  }
-
-  function handleToggle() {
-    try {
-      toggle();
-    } catch (error) {
-      setError(error as Errors.IError);
-    }
   }
 
   return (
@@ -155,7 +149,7 @@ export default function RobotControlsPopover({
         </PopoverBody>
         <PopoverFooter justifyContent="center">
           <VStack space="md" w="$full">
-            <Button bg="$primary500" onPress={handleToggle}>
+            <Button bg="$primary500" onPress={doToggle}>
               <ButtonIcon
                 as={isPaused ? Play : Pause}
                 key={String(isPaused)}
