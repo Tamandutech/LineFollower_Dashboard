@@ -23,8 +23,8 @@ export type ErrorModalWrapperProps<
  * @returns {UseErrorModalReturn} Modal descrevendo o erro
  */
 export function useErrorModal(
-  error: Errors.IError | null,
-  onClose: () => void,
+  error: Errors.IError | null | undefined,
+  onClose?: () => void,
 ): UseErrorModalReturn {
   const [show, setShow] = useState(false);
 
@@ -34,7 +34,16 @@ export function useErrorModal(
     }
   }, [error]);
 
-  return error && <ErrorModal error={error} isOpen={show} onClose={onClose} />;
+  function handleClose() {
+    setShow(false);
+    if (onClose) {
+      onClose();
+    }
+  }
+
+  return (
+    error && <ErrorModal error={error} isOpen={show} onClose={handleClose} />
+  );
 }
 
 /**
