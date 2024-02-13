@@ -27,7 +27,7 @@ function NavigationThemeProvider({ children }: PropsWithChildren) {
   const navigationLight: NavigationTheme = {
     dark: false,
     colors: {
-      primary: useToken("colors", "primary"),
+      primary: useToken("colors", "primary500"),
       background: useToken("colors", "backgroundLight50"),
       card: useToken("colors", "backgroundLight50"),
       text: useToken("colors", "textDark950"),
@@ -39,7 +39,7 @@ function NavigationThemeProvider({ children }: PropsWithChildren) {
   const navigationDark: NavigationTheme = {
     dark: true,
     colors: {
-      primary: useToken("colors", "primary"),
+      primary: useToken("colors", "primary500"),
       background: useToken("colors", "backgroundDark950"),
       card: useToken("colors", "backgroundDark900"),
       text: useToken("colors", "textLight50"),
