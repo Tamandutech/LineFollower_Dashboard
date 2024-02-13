@@ -51,6 +51,7 @@
     "react-native-screens": "~3.22.0",
     "react-native-svg": "13.9.0",
     "react-native-web": "~0.19.6",
+    "react-use": "^17.5.0",
     "readable-stream": "^4.5.2",
     "rxjs": "^7.8.1",
     "stream-browserify": "^3.0.0",
