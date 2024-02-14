@@ -45,7 +45,7 @@ export default function ErrorModal({
             <Text size="sm">{error.message}</Text>
             <Alert action="error" variant="solid" mt="$2">
               <AlertIcon as={InfoIcon} mr="$3" />
-              <AlertText>{error.action}</AlertText>
+              <AlertText size="sm">{error.action}</AlertText>
             </Alert>
           </VStack>
         </ModalBody>
