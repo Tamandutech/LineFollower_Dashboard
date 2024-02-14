@@ -1,5 +1,5 @@
 import Page from "@/components/layout/page";
-import type { ColorModeOption } from "@/contexts/color-mode";
+import { colorModeOptions } from "@/constants/options";
 import { useColorMode } from "@/contexts/color-mode";
 import { useAuth, withAuthGuard } from "@/providers/auth";
 import {
@@ -30,7 +30,7 @@ import {
 import { Redirect } from "expo-router";
 import type { User } from "firebase/auth";
 import { ChevronDownIcon, LogOut, Palette } from "lucide-react-native";
-import { useState } from "react";
+import { useMemo } from "react";
 
 function Profile() {
   const { user, logout } = useAuth();
@@ -89,20 +89,10 @@ function PersonalInfoSection({ user }: { user: User }) {
 
 function PreferencesSection() {
   const [colorMode, setColorMode] = useColorMode();
-  const [selectedColorModeOption, setSelectedColorModeOption] =
-    useState<ColorModeOption>(colorMode);
-
-  const colorModeOptions: { label: string; value: ColorModeOption }[] = [
-    { label: "Claro", value: "light" },
-    { label: "Escuro", value: "dark" },
-    { label: "Automático", value: "automatic" },
-  ];
-
-  function setColorModeToSelected(value: ColorModeOption) {
-    setSelectedColorModeOption(value);
-    setColorMode(value);
-  }
-
+  const initialColorModeLabel = useMemo(
+    () => colorModeOptions.find((option) => option.value === colorMode)?.label,
+    [colorMode],
+  );
   return (
     <VStack space="md">
       <Heading>Preferências</Heading>
@@ -112,12 +102,10 @@ function PreferencesSection() {
           <Text>Tema</Text>
         </HStack>
         <Select
-          selectedValue={selectedColorModeOption}
-          selectedLabel={
-            colorModeOptions.find((option) => option.value === colorMode)?.label
-          }
+          selectedValue={colorMode}
+          initialLabel={initialColorModeLabel}
           w="$32"
-          onValueChange={setColorModeToSelected as (arg: string) => void}
+          onValueChange={setColorMode as (value: string) => void}
         >
           <SelectTrigger variant="outline" size="sm">
             <SelectInput placeholder="Selecione" />

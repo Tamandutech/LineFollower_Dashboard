@@ -1,3 +1,4 @@
+import type { ColorModeOption } from "@/contexts/color-mode";
 import { batteryVoltageFormatter } from "@/models/battery";
 import { defaultSettings } from "@/models/sessions";
 import { ONE_MINUTE_IN_MILLISECONDS } from ".";
@@ -37,3 +38,9 @@ export const batteryLowWarningThresholdOptions: Array<Option> = Array.from(
   label: `${batteryVoltageFormatter.format(threshold / 1000)}V`,
   value: threshold,
 }));
+
+export const colorModeOptions: { label: string; value: ColorModeOption }[] = [
+  { label: "Claro", value: "light" },
+  { label: "Escuro", value: "dark" },
+  { label: "Automático", value: "automatic" },
+];

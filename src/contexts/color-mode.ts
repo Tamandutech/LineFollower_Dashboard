@@ -6,14 +6,11 @@ export type ColorMode = Exclude<ColorSchemeName, null | undefined>;
 export type ColorModeOption = ColorMode | "automatic";
 
 export type ColorModeContextType = readonly [
-  ColorMode,
+  ColorModeOption,
   (mode: ColorModeOption) => void,
 ];
 
-export const ColorModeContext = createContext<ColorModeContextType>([
-  "dark",
-  (() => {}) as ColorModeContextType[1],
-]);
+export const ColorModeContext = createContext({} as ColorModeContextType);
 
 export function useColorMode(): ColorModeContextType {
   return useContext(ColorModeContext);

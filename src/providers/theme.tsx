@@ -1,14 +1,12 @@
 import { config } from "@/config/gluestack-ui.config";
-import {
-  type ColorMode,
-  ColorModeContext,
-  type ColorModeOption,
-} from "@/contexts/color-mode";
+import { COLOR_MODE_KEY as COLOR_MODE_OPTION_KEY } from "@/constants/keys";
+import { ColorModeContext, type ColorModeOption } from "@/contexts/color-mode";
 import {
   GluestackUIProvider,
   useColorMode,
   useToken,
 } from "@gluestack-ui/themed";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   type Theme as NavigationTheme,
   ThemeProvider,
@@ -57,17 +55,25 @@ function NavigationThemeProvider({ children }: PropsWithChildren) {
   );
 }
 
-export default function UIThemeProvider({ children }: PropsWithChildren) {
-  const colorSheme = useColorScheme();
-  const automaticColorMode = colorSheme || "dark";
-  const [colorMode, setColorMode] = useState<ColorMode>(automaticColorMode);
+export default function UIThemeProvider({
+  children,
+  userColorModeOption = "automatic",
+}: PropsWithChildren & { userColorModeOption?: ColorModeOption }) {
+  const automaticColorMode = useColorScheme() || "dark";
+  const [colorModeOption, setColorModeOption] =
+    useState<ColorModeOption>(userColorModeOption);
+  const colorMode =
+    colorModeOption === "automatic" ? automaticColorMode : colorModeOption;
 
-  function setColorModeWithDefault(option: ColorModeOption) {
-    setColorMode(option === "automatic" ? automaticColorMode : option);
+  function setAndStoreColorModeOption(option: ColorModeOption) {
+    setColorModeOption(option);
+    AsyncStorage.setItem(COLOR_MODE_OPTION_KEY, option);
   }
 
   return (
-    <ColorModeContext.Provider value={[colorMode, setColorModeWithDefault]}>
+    <ColorModeContext.Provider
+      value={[colorModeOption, setAndStoreColorModeOption]}
+    >
       <GluestackUIProvider colorMode={colorMode} config={config}>
         <NavigationThemeProvider>{children}</NavigationThemeProvider>
       </GluestackUIProvider>
