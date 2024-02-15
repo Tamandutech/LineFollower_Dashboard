@@ -15,6 +15,13 @@ export default function AppLayout() {
           presentation: "modal",
         }}
       />
+      <Stack.Screen
+        name="bluetooth-permissions-request"
+        options={{
+          title: "Permissões necessárias",
+          presentation: "modal",
+        }}
+      />
     </Stack>
   );
 }

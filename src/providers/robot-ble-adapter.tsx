@@ -1,7 +1,5 @@
 import { useRobotContext } from "@/contexts/robot";
-import { PermissionsNotGranted } from "@/lib/ble/errors";
 import {
-  createRequestBluetoothPermissionsStrategyForPlatform,
   createRequestRobotDeviceStrategyForPlatform,
   createRobotBleClientForPlatform,
 } from "@/lib/ble/factories";
@@ -11,14 +9,12 @@ import {
   type SetStateAction,
   createContext,
   useContext,
-  useEffect,
   useState,
 } from "react";
 import { Platform } from "react-native";
 
 export enum BluetoothState {
   IDLE = "idle",
-  REQUESTING_PERMISSIONS = "requesting-permissions",
   REQUESTING_DEVICE = "requesting-device",
   CONNECTING = "connecting",
   CONNECTED = "connected",
@@ -77,9 +73,6 @@ export const RobotBleClientContext = createContext(
 export const RequestRobotDeviceStrategyContext = createContext(
   {} as RequestRobotDeviceStrategy<unknown>,
 );
-export const RequestBluetoothPermissionsStrategyContext = createContext(
-  {} as RequestBluetoothPermissionsStrategy,
-);
 export const BluetoothStateContext = createContext(
   [] as unknown as BluetoothStateContextValue,
 );
@@ -87,48 +80,13 @@ export const BluetoothStateContext = createContext(
 export function useRobotBleAdapter(): UseRobotBleClientReturn {
   const client = useContext(RobotBleClientContext);
   const requestDeviceStrategy = useContext(RequestRobotDeviceStrategyContext);
-  const requestPermissionStrategy = useContext(
-    RequestBluetoothPermissionsStrategyContext,
-  );
   const [state, setState] = useContext(BluetoothStateContext);
   const [, setRobot] = useRobotContext();
-  const [requestPermissionsResult, setRequestPermissionsResult] =
-    useState<RequestBluetoothPermissionsResult | null>(null);
-
-  useEffect(() => {
-    async function requestPermissions() {
-      setState(BluetoothState.REQUESTING_PERMISSIONS);
-      try {
-        setRequestPermissionsResult(await requestPermissionStrategy.execute());
-      } finally {
-        setState(BluetoothState.IDLE);
-      }
-    }
-
-    if (requestPermissionsResult === null) {
-      requestPermissions();
-    }
-  }, [requestPermissionStrategy, requestPermissionsResult, setState]);
-
-  function checkPermissions() {
-    if (
-      requestPermissionsResult === null ||
-      !requestPermissionsResult.granted
-    ) {
-      throw new PermissionsNotGranted({
-        action:
-          requestPermissionsResult?.action ??
-          "Não foi possível obter permissão para acessar o Bluetooth.",
-      });
-    }
-  }
 
   async function requestDevice(
     config: Robot.BluetoothConnectionConfig,
     namePrefix: string,
   ): Promise<unknown> {
-    checkPermissions();
-
     setState(BluetoothState.REQUESTING_DEVICE);
     try {
       return await requestDeviceStrategy.execute(
@@ -180,17 +138,11 @@ export default function RobotBleAdapterProvider({
         createRobotBleClientForPlatform(Platform.OS) as RobotBleClient<unknown>
       }
     >
-      <RequestBluetoothPermissionsStrategyContext.Provider
-        value={createRequestBluetoothPermissionsStrategyForPlatform(
-          Platform.OS,
-        )}
+      <RequestRobotDeviceStrategyContext.Provider
+        value={createRequestRobotDeviceStrategyForPlatform(Platform.OS)}
       >
-        <RequestRobotDeviceStrategyContext.Provider
-          value={createRequestRobotDeviceStrategyForPlatform(Platform.OS)}
-        >
-          <BluetoothStateProvider>{children}</BluetoothStateProvider>
-        </RequestRobotDeviceStrategyContext.Provider>
-      </RequestBluetoothPermissionsStrategyContext.Provider>
+        <BluetoothStateProvider>{children}</BluetoothStateProvider>
+      </RequestRobotDeviceStrategyContext.Provider>
     </RobotBleClientContext.Provider>
   );
 }

@@ -1,28 +1,41 @@
 import RobotBatteryStatusBox from "@/components/data/robot-batery-status-box";
-import type { RobotContextType } from "@/contexts/robot";
+import { RobotContext, type RobotContextType } from "@/contexts/robot";
 import {
   BluetoothState,
   BluetoothStateContext,
-  RequestBluetoothPermissionsStrategyContext,
   RequestRobotDeviceStrategyContext,
   RobotBleClientContext,
 } from "@/providers/robot-ble-adapter";
 import UIThemeProvider from "@/providers/theme";
 import { render, screen } from "@testing-library/react-native";
-import { withRobotContext } from "__tests__/unit/contexts/robot.test";
 import type { PropsWithChildren } from "react";
 import { SWRConfig } from "swr";
 
 jest.mock("@/models/sessions");
 
+jest.mock("@react-native-async-storage/async-storage", () => ({
+  __esModule: true,
+  default: {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+  },
+}));
+
 describe("RobotBatteryStatusBox", () => {
   const mockedDevice: unknown = { name: "test-device" };
-  let mockedRobotContext: jest.Mocked<RobotContextType>;
+  const mockedRobotContext: jest.Mocked<RobotContextType> = [
+    {
+      name: "test-device",
+      id: "test-id",
+      services: {},
+      interface: "test",
+    },
+    jest.fn(),
+  ];
   let mockedClient: jest.Mocked<RobotBleClient<unknown>>;
   let mockedRequestDeviceStrategy: jest.Mocked<
     RequestRobotDeviceStrategy<unknown>
   >;
-  let mockedRequestPermissionStrategy: jest.Mocked<RequestBluetoothPermissionsStrategy>;
   let RobotBleAdapterMockProvider: React.FC<PropsWithChildren>;
   let ui: JSX.Element;
 
@@ -42,38 +55,24 @@ describe("RobotBatteryStatusBox", () => {
         .fn()
         .mockImplementation(() => Promise.resolve(mockedDevice)),
     };
-    mockedRequestPermissionStrategy = {
-      execute: jest.fn(() => Promise.resolve({ granted: true })),
-    };
 
-    [mockedRobotContext, RobotBleAdapterMockProvider] = withRobotContext(
-      ({ children }: PropsWithChildren) => (
-        <SWRConfig value={{ provider: () => new Map() }}>
-          <BluetoothStateContext.Provider
-            value={[BluetoothState.IDLE, jest.fn()]}
-          >
+    RobotBleAdapterMockProvider = ({ children }: PropsWithChildren) => (
+      <SWRConfig value={{ provider: () => new Map() }}>
+        <BluetoothStateContext.Provider
+          value={[BluetoothState.IDLE, jest.fn()]}
+        >
+          <RobotContext.Provider value={mockedRobotContext}>
             <RobotBleClientContext.Provider value={mockedClient}>
               <RequestRobotDeviceStrategyContext.Provider
                 value={mockedRequestDeviceStrategy}
               >
-                <RequestBluetoothPermissionsStrategyContext.Provider
-                  value={mockedRequestPermissionStrategy}
-                >
-                  {children}
-                </RequestBluetoothPermissionsStrategyContext.Provider>
+                {children}
               </RequestRobotDeviceStrategyContext.Provider>
             </RobotBleClientContext.Provider>
-          </BluetoothStateContext.Provider>
-        </SWRConfig>
-      ),
+          </RobotContext.Provider>
+        </BluetoothStateContext.Provider>
+      </SWRConfig>
     );
-
-    mockedRobotContext[0] = {
-      name: "test-device",
-      id: "test-id",
-      services: {},
-      interface: "test",
-    };
 
     ui = (
       <UIThemeProvider>

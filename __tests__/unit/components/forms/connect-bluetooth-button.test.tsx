@@ -3,7 +3,6 @@ import type { RobotContextType } from "@/contexts/robot";
 import {
   BluetoothState,
   BluetoothStateContext,
-  RequestBluetoothPermissionsStrategyContext,
   RequestRobotDeviceStrategyContext,
   RobotBleClientContext,
 } from "@/providers/robot-ble-adapter";
@@ -15,6 +14,14 @@ import { SWRConfig } from "swr";
 
 jest.mock("@/models/robots");
 
+jest.mock("@react-native-async-storage/async-storage", () => ({
+  __esModule: true,
+  default: {
+    getItem: jest.fn(),
+    setItem: jest.fn(),
+  },
+}));
+
 describe("ConnectBluetoothButton", () => {
   const mockedDevice: unknown = { name: "test-device" };
   let onConnectCallback: jest.Mock;
@@ -23,7 +30,6 @@ describe("ConnectBluetoothButton", () => {
   let mockedRequestDeviceStrategy: jest.Mocked<
     RequestRobotDeviceStrategy<unknown>
   >;
-  let mockedRequestPermissionStrategy: jest.Mocked<RequestBluetoothPermissionsStrategy>;
   let RobotBleAdapterMockProvider: React.FC<PropsWithChildren>;
   let ui: JSX.Element;
 
@@ -42,9 +48,6 @@ describe("ConnectBluetoothButton", () => {
         .fn()
         .mockImplementation(() => Promise.resolve(mockedDevice)),
     };
-    mockedRequestPermissionStrategy = {
-      execute: jest.fn(() => Promise.resolve({ granted: true })),
-    };
 
     [mockedRobotContext, RobotBleAdapterMockProvider] = withRobotContext(
       ({ children }: PropsWithChildren) => (
@@ -56,11 +59,7 @@ describe("ConnectBluetoothButton", () => {
               <RequestRobotDeviceStrategyContext.Provider
                 value={mockedRequestDeviceStrategy}
               >
-                <RequestBluetoothPermissionsStrategyContext.Provider
-                  value={mockedRequestPermissionStrategy}
-                >
-                  {children}
-                </RequestBluetoothPermissionsStrategyContext.Provider>
+                {children}
               </RequestRobotDeviceStrategyContext.Provider>
             </RobotBleClientContext.Provider>
           </BluetoothStateContext.Provider>

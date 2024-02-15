@@ -1,7 +1,9 @@
 import { COLOR_MODE_KEY } from "@/constants/keys";
 import type { ColorModeOption } from "@/contexts/color-mode";
 import { RobotContextProvider } from "@/contexts/robot";
+import { createRequestBluetoothPermissionsStrategyForPlatform } from "@/lib/ble";
 import AuthProvider from "@/providers/auth";
+import BluetoothPermissionsContextProvider from "@/providers/bluetooth-permissions";
 import FirebaseBackendProvider from "@/providers/firebase";
 import RobotBleAdapterProvider from "@/providers/robot-ble-adapter";
 import UIThemeProvider from "@/providers/theme";
@@ -16,6 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
 import { Slot, SplashScreen } from "expo-router";
 import { useEffect, useState } from "react";
+import { Platform } from "react-native";
 export { ErrorBoundary } from "expo-router";
 
 SplashScreen.preventAutoHideAsync();
@@ -50,16 +53,22 @@ export default function RootLayout() {
   }
 
   return (
-    <RobotBleAdapterProvider>
-      <UIThemeProvider userColorModeOption={userColorMode || undefined}>
-        <FirebaseBackendProvider>
-          <AuthProvider>
-            <RobotContextProvider>
-              <Slot />
-            </RobotContextProvider>
-          </AuthProvider>
-        </FirebaseBackendProvider>
-      </UIThemeProvider>
-    </RobotBleAdapterProvider>
+    <BluetoothPermissionsContextProvider
+      requestStrategy={createRequestBluetoothPermissionsStrategyForPlatform(
+        Platform.OS,
+      )}
+    >
+      <RobotBleAdapterProvider>
+        <UIThemeProvider userColorModeOption={userColorMode || undefined}>
+          <FirebaseBackendProvider>
+            <AuthProvider>
+              <RobotContextProvider>
+                <Slot />
+              </RobotContextProvider>
+            </AuthProvider>
+          </FirebaseBackendProvider>
+        </UIThemeProvider>
+      </RobotBleAdapterProvider>
+    </BluetoothPermissionsContextProvider>
   );
 }
