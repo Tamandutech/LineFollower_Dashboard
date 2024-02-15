@@ -60,10 +60,8 @@ export default function RobotControlsPopover({
   const [{ error: disconnectError }, doDisconnect] = useAsyncFn(async () => {
     await disconnect();
     onDisconnect();
-  });
-  const [{ error: toggleError }, doToggle] = useAsyncFn(async () => {
-    await toggle();
-  });
+  }, [disconnect, onDisconnect]);
+  const [{ error: toggleError }, doToggle] = useAsyncFn(toggle, [toggle]);
   const errorModal = useErrorModal(
     useMemo(
       () => disconnectError || toggleError,
