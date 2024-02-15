@@ -8,5 +8,6 @@
     }
   },
   "java.compile.nullAnalysis.mode": "disabled",
-  "java.autobuild.enabled": false
+  "java.autobuild.enabled": false,
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
