@@ -1,23 +1,9 @@
+import { levelToStyleMap } from "@/constants/styles";
 import {
-  BatteryLevel,
   batteryVoltageFormatter,
   useRobotBatteryStatus,
 } from "@/models/battery";
 import { HStack, Icon, Spinner, Text } from "@gluestack-ui/themed";
-import {
-  BatteryCharging,
-  BatteryFull,
-  BatteryLow,
-  BatteryWarning,
-} from "lucide-react-native";
-import type { FC } from "react";
-
-const levelToStyleMap = new Map<BatteryLevel, { color: string; icon: FC }>([
-  [BatteryLevel.CRITIC, { color: "$error500", icon: BatteryWarning }],
-  [BatteryLevel.LOW, { color: "$warning500", icon: BatteryLow }],
-  [BatteryLevel.OK, { color: "$success500", icon: BatteryFull }],
-  [BatteryLevel.UNKNOWN, { color: "$tertiary500", icon: BatteryCharging }],
-]);
 
 export default function RobotBatteryStatusBox() {
   const { status, isLoading, level } = useRobotBatteryStatus();
