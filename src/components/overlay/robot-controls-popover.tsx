@@ -1,3 +1,4 @@
+import { levelToStyleMap } from "@/constants/styles";
 import { useRobotContext } from "@/contexts/robot";
 import { useConfirmActionModal } from "@/hooks/use-confirm-action-modal";
 import { useErrorModal } from "@/hooks/use-error-modal";
@@ -54,7 +55,7 @@ export default function RobotControlsPopover({
   const [robot] = useRobotContext();
   const { reveal, isRevealed, state } = useConfirmActionModal();
   const { client: bleClient, disconnect } = useRobotBleAdapter();
-  const { status } = useRobotBatteryStatus();
+  const { status, level } = useRobotBatteryStatus();
   const { toggle, isPaused } = useRobotSystem(bleClient, UART_TX, UART_RX);
   const [connected, setConnected] = useState(false);
   const [{ error: disconnectError }, doDisconnect] = useAsyncFn(async () => {
@@ -137,6 +138,11 @@ export default function RobotControlsPopover({
                     status?.time as Date,
                   )}m atrás`}
                 />
+                <RobotControlInfo
+                  label="Nível"
+                  value={levelToStyleMap.get(level)?.label}
+                  color={levelToStyleMap.get(level)?.color}
+                />
               </RobotControlSection>
             ) : (
               <Center>
@@ -183,13 +189,22 @@ function RobotControlSection({ title, children }: RobotControlSectionProps) {
   );
 }
 
-type RobotControlInfoProps = { label: string; value: ReactNode };
+type RobotControlInfoProps = {
+  label: string;
+  value: ReactNode;
+} & ComponentProps<typeof Text>;
 
-function RobotControlInfo({ label, value }: RobotControlInfoProps) {
+function RobotControlInfo({
+  label,
+  value,
+  ...valueTextProps
+}: RobotControlInfoProps) {
   return (
     <HStack justifyContent="space-between" alignItems="center">
       <Text size="sm">{label}</Text>
-      <Text sub>{value}</Text>
+      <Text sub {...valueTextProps}>
+        {value}
+      </Text>
     </HStack>
   );
 }
