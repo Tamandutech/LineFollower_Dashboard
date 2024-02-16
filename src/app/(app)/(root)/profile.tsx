@@ -103,7 +103,7 @@ function PreferencesSection() {
         </HStack>
         <Select
           selectedValue={colorMode}
-          initialLabel={initialColorModeLabel}
+          selectedLabel={initialColorModeLabel}
           w="$32"
           onValueChange={setColorMode as (value: string) => void}
         >
