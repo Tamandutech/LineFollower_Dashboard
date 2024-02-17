@@ -73,13 +73,13 @@ abstract class BleClient<TDevice> implements RobotBleClient<TDevice> {
     }
   }
 
-  async subscribeToTxCharacteristic(
+  async subscribeToTxCharacteristic<T>(
     txCharacteristicId: string,
-    observer: (message: unknown) => void,
+    observer: (message: T) => void,
   ): Promise<Subscription> {
     await this.checkTxCharacteristic(txCharacteristicId);
     return (
-      this.observables.get(txCharacteristicId) as Observable<unknown>
+      this.observables.get(txCharacteristicId) as Observable<T>
     ).subscribe(observer);
   }
 
