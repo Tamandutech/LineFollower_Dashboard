@@ -79,5 +79,8 @@
   "resolutions": {
     "react-refresh": "~0.14.0"
   },
+  "engines": {
+    "node": ">=21.7.3"
+  },
   "private": true
 }
