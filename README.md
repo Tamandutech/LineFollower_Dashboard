@@ -10,13 +10,13 @@ Para testar e trabalhar no aplicativo utilizando a sua máquina
 - instale as dependências do projeto
 
   ```bash
-  npm i
+  pnpm i
   ```
 
 - para rodar o projeto em um emulador, execute
 
   ```bash
-  npm run android
+  pnpm run android
   ```
 
 ## Testes
@@ -24,13 +24,13 @@ Para testar e trabalhar no aplicativo utilizando a sua máquina
 Este projeto utiliza o [Jest](https://jestjs.io/pt-BR/) como framework para automatização de testes. Para rodar os testes do projeto, execute
 
 ```bash
-npm run test:unit:ci
+pnpm run test:unit:ci
 ```
 
 ou
 
 ```bash
-npm run test:unit
+pnpm run test:unit
 ```
 
 para re-executar conforme os arquivos são alterados.
