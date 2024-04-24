@@ -64,7 +64,7 @@ export default function Login() {
       return;
     }
     handleGithubResponse(response);
-  }, [response]);
+  }, [response, handleGithubResponse]);
 
   async function redirectToGithubSignIn() {
     await promptAsync({

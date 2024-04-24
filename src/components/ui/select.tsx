@@ -1,6 +1,5 @@
 import {
   ChevronDownIcon,
-  Select as SelectWrapper,
   SelectBackdrop,
   SelectContent,
   SelectDragIndicator,
@@ -9,6 +8,7 @@ import {
   SelectInput,
   SelectPortal,
   SelectTrigger,
+  Select as SelectWrapper,
 } from "@gluestack-ui/themed";
 
 import type { ComponentProps } from "react";

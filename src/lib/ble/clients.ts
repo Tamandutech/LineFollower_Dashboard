@@ -1,4 +1,4 @@
-import { Buffer } from "buffer";
+import { Buffer } from "node:buffer";
 import mitt from "mitt";
 import type { BleManager, Characteristic, Device } from "react-native-ble-plx";
 import {

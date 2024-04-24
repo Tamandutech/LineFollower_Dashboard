@@ -1,4 +1,4 @@
-import { Buffer } from "buffer";
+import { Buffer } from "node:buffer";
 import { BleNativeClient, BleWebClient } from "@/lib/ble/clients";
 import { randomUUID } from "expo-crypto";
 import type { BleManager, Characteristic, Device } from "react-native-ble-plx";
