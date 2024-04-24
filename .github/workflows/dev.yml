@@ -1,0 +1,42 @@
+name: Development workflow
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+  schedule:
+    - cron: '21 21 * * 4'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '21.7.3'
+      - name: Install Biome
+        run: |
+          pnpm add @biomejs/biome@1.7.1
+      - name: Run Biome
+        run: pnpm run check:ci
+        continue-on-error: false
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '21.7.3'
+      - name: Install dependencies
+        run: |
+          pnpm i
+      - name: Run test suites
+        run: pnpm run test:unit:ci
