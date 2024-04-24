@@ -31,7 +31,7 @@
     "plugins": [
       "expo-router",
       [
-        "@config-plugins/react-native-ble-plx",
+        "react-native-ble-plx",
         {
           "isBackgroundEnabled": true,
           "modes": ["peripheral", "central"]
